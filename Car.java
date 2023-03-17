@@ -1,7 +1,10 @@
+import java.util.ArrayList;
+
 abstract public class Car {
     private String name;
     public static int forId = 0;
     private String carId;
+    private ArrayList <Car> behind;
     Car(String n){
         this.name = n;
         this.carId = "C" + (++forId);
