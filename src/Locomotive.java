@@ -6,10 +6,10 @@ public class Locomotive {
     private static double weight = 100;
     private Station home;
     private double currentSpeed;
-    Station globalFrom;
-    Station from;
-    Station to;
-    Station globalTo;
+    private Station globalFrom;
+    private Station from;
+    private Station to;
+    private Station globalTo;
     private String idLocomotive;
     private static int forId = 0;
     private ArrayList<Car> cars;
