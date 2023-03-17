@@ -1,8 +1,9 @@
-
+import java.util.ArrayList;
 
 public class Locomotive {
     //variables:
     private String name;
+    private static double weight = 100;
     private Station home;
     private double currentSpeed;
     Station globalFrom;
@@ -11,6 +12,7 @@ public class Locomotive {
     Station globalTo;
     private String idLocomotive;
     private static int forId = 0;
+    private ArrayList<Car> cars;
 
     //constructor:
     Locomotive(String n, Station h){
@@ -48,6 +50,10 @@ public class Locomotive {
         return to;
     }
 
+    public static double getWeight() {
+        return weight;
+    }
+
     public Station getGlobalTo() {
         return globalTo;
     }
@@ -70,5 +76,13 @@ public class Locomotive {
 
     public void setCurrentSpeed(double currentSpeed) {
         this.currentSpeed = currentSpeed;
+    }
+    //funcs:
+    public void addCar(Car car) throws TooManyCarsException {
+        if(cars.size() < 10){
+            this.cars.add(car);
+        }else{
+            throw new TooManyCarsException("There is too many cars here, so we gonna launch without this car");
+        }
     }
 }
