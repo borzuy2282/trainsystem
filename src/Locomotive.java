@@ -12,7 +12,7 @@ public class Locomotive {
     private Station globalTo;
     private String idLocomotive;
     private static int forId = 0;
-    private ArrayList<Car> cars;
+//    private ArrayList<Car> cars;
 
     //constructor:
     Locomotive(String n, Station h){
@@ -50,7 +50,7 @@ public class Locomotive {
         return to;
     }
 
-    public static double getWeight() {
+    public double getWeight() {
         return weight;
     }
 
@@ -78,11 +78,11 @@ public class Locomotive {
         this.currentSpeed = currentSpeed;
     }
     //funcs:
-    public void addCar(Car car) throws TooManyCarsException {
-        if(cars.size() < 10){
-            this.cars.add(car);
-        }else{
-            throw new TooManyCarsException("There is too many cars here, so we gonna launch without this car");
-        }
-    }
+//    public void addCar(Car car) throws TooManyCarsException {
+//        if(cars.size() < 10){
+//            this.cars.add(car);
+//        }else{
+//            throw new TooManyCarsException("There is too many cars here, so we gonna launch without this car");
+//        }
+//    }
 }
