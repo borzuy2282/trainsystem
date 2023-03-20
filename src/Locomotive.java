@@ -12,7 +12,7 @@ public class Locomotive {
     private Station globalTo;
     private String idLocomotive;
     private static int forId = 0;
-//    private ArrayList<Car> cars;
+//    private ArrayList<Cars.Car> cars;
 
     //constructor:
     Locomotive(String n, Station h){
@@ -78,7 +78,7 @@ public class Locomotive {
         this.currentSpeed = currentSpeed;
     }
     //funcs:
-//    public void addCar(Car car) throws TooManyCarsException {
+//    public void addCar(Cars.Car car) throws TooManyCarsException {
 //        if(cars.size() < 10){
 //            this.cars.add(car);
 //        }else{

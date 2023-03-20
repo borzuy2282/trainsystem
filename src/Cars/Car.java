@@ -1,9 +1,11 @@
+package Cars;
+
 import java.util.ArrayList;
 
 abstract public class Car {
-    private String name;
+    private final String name;
     public static int forId = 0;
-    private String carId;
+    private final String carId;
     private double weightNetto;
     private double weightBrutto;
     private boolean electricity;

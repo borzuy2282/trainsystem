@@ -1,10 +1,11 @@
+import Cars.Car;
+
 import java.util.ArrayList;
-import java.util.TooManyListenersException;
 
 public class Trainset {
-    private String name;
+    private final String name;
     private static int forId = 0;
-    private String idTrainset;
+    private final String idTrainset;
     private Locomotive head;
     private ArrayList<Car> cars;
     private double weight;
