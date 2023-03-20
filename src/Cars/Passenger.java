@@ -35,9 +35,10 @@ public class Passenger extends Car{
     public void fillTheTrain(int p) throws TooManyPeopleException {
         if(places >= p){
             people = p;
+            weightBrutto = weightNetto + people;
         }else{
             throw new TooManyPeopleException("No way we can fit those people, try to re-sell them tickets.");
         }
-        weightBrutto = weightNetto + people;
+
     }
 }
