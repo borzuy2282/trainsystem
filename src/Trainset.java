@@ -2,7 +2,7 @@ import Cars.Car;
 
 import java.util.ArrayList;
 
-public class Trainset {
+public class Trainset extends Thread {
     private final String name;
     private static int forId = 0;
     private final String idTrainset;
@@ -21,9 +21,9 @@ public class Trainset {
         idTrainset = "TS" + (++forId);
     }
     //getters
-    public String getName() {
-        return name;
-    }
+//    public String getName() {
+//        return name;
+//    }
 
     public String getIdTrainset() {
         return idTrainset;
@@ -70,6 +70,11 @@ public class Trainset {
         this.head = head;
         weight += head.getWeight();
     }
+
+    public void setSpeed(double speed) {
+        this.speed = speed;
+    }
+
     public void addCar(Car c) throws TooManyCarsException{
         if(cars.size() >= 10){
             throw new TooManyCarsException("There are too many cars here, we gonna launch without this");
@@ -90,5 +95,43 @@ public class Trainset {
         globalTo = dest;
         from = globalFrom;
     }
+    public void run(){
+        this.startRide(this.getTo());
+        Rail tmp = new Rail(this.from, this.to);
+        this.setSpeed(10);
+        while(tmp.getLenLeft() > 0){
+            System.out.println(tmp.getLenLeft());
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            int temp = (int) (Math.random() * 100);
+            if(temp > 50){
+                if(this.getSpeed() + this.getSpeed() * 0.03 < 200){
+                    this.setSpeed(this.getSpeed() + this.getSpeed() * 0.03);
+                }else{
+                    try {
+                        throw new RailroadHazardException("Too much, we won't speed up");
+                    } catch (RailroadHazardException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }else{
+                if(this.getSpeed() - this.getSpeed() * 0.03 > 0) {
+                    this.setSpeed(this.getSpeed() - this.getSpeed() * 0.03);
+                }else{
+                    try{
+                        throw new RailroadHazardException("We can't stop, we will go on current speed");
+                    } catch (RailroadHazardException e){
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
 
+            tmp.setLenLeft(tmp.getLenLeft() - this.getSpeed());
+        }
+        System.out.println("We're here!");
+    }
 }
+

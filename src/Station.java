@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class Station {
     private String name;
-    private ArrayList<Station> connection;
+    private ArrayList<Rail> connection;
     private String idStation;
     private static int forId = 0;
     Station(String n){
@@ -17,7 +17,7 @@ public class Station {
     public void setName(String name) {
         this.name = name;
     }
-    public void addConnection(Station s){
-        connection.add(s);
+    public void addConnection(Rail r){
+        connection.add(r);
     }
 }
