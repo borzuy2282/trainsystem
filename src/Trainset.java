@@ -10,8 +10,14 @@ public class Trainset {
     private ArrayList<Car> cars;
     private double weight;
     private int electricalCars;
-    Trainset(String name){
+    private double speed;
+    private Station globalFrom;
+    private Station from;
+    private Station to;
+    private Station globalTo;
+    Trainset(String name, Station h){
         this.name = name;
+        this.globalFrom = h;
         idTrainset = "TS" + (++forId);
     }
     //getters
@@ -38,6 +44,26 @@ public class Trainset {
     public int getElectricalCars() {
         return electricalCars;
     }
+
+    public double getSpeed() {
+        return speed;
+    }
+
+    public Station getGlobalFrom() {
+        return globalFrom;
+    }
+
+    public Station getFrom() {
+        return from;
+    }
+
+    public Station getTo() {
+        return to;
+    }
+
+    public Station getGlobalTo() {
+        return globalTo;
+    }
     //setters
 
     public void setHead(Locomotive head) {
@@ -58,6 +84,11 @@ public class Trainset {
                 electricalCars ++;
             }
         }
+    }
+//    add here algorithm to find the shortest way
+    public void startRide(Station dest){
+        globalTo = dest;
+        from = globalFrom;
     }
 
 }

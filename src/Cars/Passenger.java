@@ -6,6 +6,7 @@ public class Passenger extends Car{
     private int people;
     private final  boolean elctricity = true;
 
+
     public Passenger(String n){
         super(n);
     }
