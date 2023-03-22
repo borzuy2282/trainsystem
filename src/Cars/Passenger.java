@@ -4,7 +4,7 @@ public class Passenger extends Car{
     private double weightBrutto;
     private final int places = 100;
     private int people;
-    private final  boolean elctricity = true;
+    private final  boolean electricity = true;
 
 
     public Passenger(String n){
@@ -29,8 +29,8 @@ public class Passenger extends Car{
         return people;
     }
 
-    public boolean isElctricity() {
-        return elctricity;
+    public boolean isElectricity() {
+        return electricity;
     }
 //    funcs:
     public void fillTheTrain(int p) throws TooManyPeopleException {
