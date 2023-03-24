@@ -7,7 +7,7 @@ public class Rail {
     public Rail(Station station1, Station station2) {
         this.station1 = station1;
         this.station2 = station2;
-        length = Math.random() * 1000;
+        length = Math.random() * 1000 + 100;
         lenLeft = length;
     }
 //  getters

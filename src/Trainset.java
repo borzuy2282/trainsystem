@@ -121,7 +121,11 @@ public class Trainset extends Thread {
     public void startRide(Station dest) {
         globalTo = dest;
         from = globalFrom;
-
+        if(past == null) {
+            ArrayList<Station> t = new ArrayList<>();
+            t.add(globalFrom);
+            past = t;
+        }
     }
 
     public Station pick(ArrayList<Station> where){
@@ -181,7 +185,18 @@ public class Trainset extends Thread {
         }
         System.out.println("We're here!");
         if(getTo().equals(getGlobalTo())){
-            System.out.println("We finished our trip");
+            System.out.println("We finished our trip " + globalTo.getName());
+            Station temp = globalFrom;
+            globalFrom = globalTo;
+            globalTo = temp;
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            this.past = null;
+            System.out.println("We're starting our trip again!");
+            this.run();
         }else{
             System.out.println(getTo().getName());
             try {
@@ -189,14 +204,7 @@ public class Trainset extends Thread {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            if(past != null){
-                past.add(getTo());
-            }else{
-
-                ArrayList <Station> t = new ArrayList<Station>();
-                t.add(getTo());
-                past = t;
-            }
+            past.add(getTo());
             from = to;
             this.run();
         }
