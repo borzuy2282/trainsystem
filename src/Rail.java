@@ -33,7 +33,7 @@ public class Rail {
     }
 
     //    funcs
-    public boolean isConnect(Station s){
-        return this.getStation1().equals(s) || this.getStation2().equals(s);
-    }
+//    public boolean isConnect(Station s){
+//        return this.getStation1().equals(s) || this.getStation2().equals(s);
+//    }
 }

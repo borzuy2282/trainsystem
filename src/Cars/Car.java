@@ -1,7 +1,5 @@
 package Cars;
 
-import java.util.ArrayList;
-
 abstract public class Car {
     private final String name;
     public static int forId = 0;

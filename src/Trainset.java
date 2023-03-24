@@ -15,7 +15,10 @@ public class Trainset extends Thread {
     private Station from;
     private Station to;
     private Station globalTo;
-    Trainset(String name, Station h){
+    private ArrayList<Station> all;
+    private ArrayList<Station> past;
+
+    Trainset(String name, Station h) {
         this.name = name;
         this.globalFrom = h;
         idTrainset = "TS" + (++forId);
@@ -64,6 +67,14 @@ public class Trainset extends Thread {
     public Station getGlobalTo() {
         return globalTo;
     }
+
+    public ArrayList<Station> getPast() {
+        return past;
+    }
+
+    public ArrayList<Station> getAll() {
+        return all;
+    }
     //setters
 
     public void setHead(Locomotive head) {
@@ -75,55 +86,92 @@ public class Trainset extends Thread {
         this.speed = speed;
     }
 
-    public void addCar(Car c) throws TooManyCarsException{
-        if(cars.size() >= 10){
+    public void setGlobalTo(Station globalTo) {
+        this.globalTo = globalTo;
+    }
+
+    public void setTo(Station to) {
+        this.to = to;
+    }
+
+    public void setAll(ArrayList<Station> all) {
+        this.all = all;
+    }
+
+    public void setPast(ArrayList<Station> past) {
+        this.past = past;
+    }
+
+    public void addCar(Car c) throws TooManyCarsException {
+        if (cars.size() >= 10) {
             throw new TooManyCarsException("There are too many cars here, we gonna launch without this");
         } else if (weight >= 1000) {
             throw new TooManyCarsException("We're too heavy, we can't go with this car");
-        }else if(electricalCars >= 6){
+        } else if (electricalCars >= 6) {
             throw new TooManyCarsException("We have no power to join this car");
-        }else{
+        } else {
             cars.add(c);
             weight += c.getWeightBrutto();
-            if(c.isElectricity()){
-                electricalCars ++;
+            if (c.isElectricity()) {
+                electricalCars++;
             }
         }
     }
-//    add here algorithm to find the shortest way
-    public void startRide(Station dest){
+
+    public void startRide(Station dest) {
         globalTo = dest;
         from = globalFrom;
+
     }
-    public void run(){
-        this.startRide(this.getTo());
+
+    public Station pick(ArrayList<Station> where){
+        int tmp = (int) (Math.random() * where.size());
+        boolean flag = true;
+        if(getPast() != null){
+            for (int i = 0; i < this.getPast().size(); i++) {
+                if (this.getPast().get(i).equals(where.get(tmp))) {
+                    flag = false;
+                }
+            }
+        }
+        if(flag){
+            return where.get(tmp);
+        }else{
+            return this.pick(where);
+        }
+    }
+
+    public void run() {
+        this.startRide(globalTo);
+        setTo(this.pick(getAll()));
+
         Rail tmp = new Rail(this.from, this.to);
         this.setSpeed(10);
-        while(tmp.getLenLeft() > 0){
+        while (tmp.getLenLeft() > 0) {
             System.out.println(tmp.getLenLeft());
             try {
-                Thread.sleep(1000);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
             int temp = (int) (Math.random() * 100);
-            if(temp > 50){
-                if(this.getSpeed() + this.getSpeed() * 0.03 < 200){
+            if (temp > 50) {
+                if (this.getSpeed() + this.getSpeed() * 0.03 < 200) {
                     this.setSpeed(this.getSpeed() + this.getSpeed() * 0.03);
-                }else{
+                } else {
                     try {
                         throw new RailroadHazardException("Too much, we won't speed up");
                     } catch (RailroadHazardException e) {
                         throw new RuntimeException(e);
                     }
                 }
-            }else{
-                if(this.getSpeed() - this.getSpeed() * 0.03 > 0) {
+            } else {
+                if (this.getSpeed() - this.getSpeed() * 0.03 > 0) {
                     this.setSpeed(this.getSpeed() - this.getSpeed() * 0.03);
-                }else{
-                    try{
+                } else {
+                    try {
                         throw new RailroadHazardException("We can't stop, we will go on current speed");
-                    } catch (RailroadHazardException e){
+                    } catch (RailroadHazardException e) {
                         throw new RuntimeException(e);
                     }
                 }
@@ -132,6 +180,28 @@ public class Trainset extends Thread {
             tmp.setLenLeft(tmp.getLenLeft() - this.getSpeed());
         }
         System.out.println("We're here!");
+        if(getTo().equals(getGlobalTo())){
+            System.out.println("We finished our trip");
+        }else{
+            System.out.println(getTo().getName());
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            if(past != null){
+                past.add(getTo());
+            }else{
+
+                ArrayList <Station> t = new ArrayList<Station>();
+                t.add(getTo());
+                past = t;
+            }
+            from = to;
+            this.run();
+        }
     }
+
+
 }
 
