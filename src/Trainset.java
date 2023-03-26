@@ -2,7 +2,7 @@ import Cars.Car;
 
 import java.util.ArrayList;
 
-public class Trainset extends Thread {
+public class Trainset implements Runnable {
     private final String name;
     private static int forId = 0;
     private final String idTrainset;
@@ -144,17 +144,39 @@ public class Trainset extends Thread {
             return this.pick(where);
         }
     }
-
-    public void run() {
+//    public void waiting(ArrayList <Trainset> all) throws InterruptedException {
+//        boolean flag = true;
+//        for (int i = 0; i < all.size(); i++) {
+//            if(!this.getIdTrainset().equals(all.get(i).idTrainset)){
+//                if(this.getFrom() != null && all.get(i).getFrom() != null) {
+//                    if (all.get(i).getFrom().equals(this.getFrom()) && all.get(i).getTo().equals(this.getTo())) {
+//                        flag = false;
+//                    }
+//                }
+//            }
+//        }
+//        if(flag){
+//            System.out.println("I'm waiting " + this.getIdTrainset());
+//            this.join();
+//        }
+//    }
+    @Override
+    public void run(){
         this.startRide(globalTo);
         setTo(this.pick(getAll()));
 
         Rail tmp = new Rail(this.from, this.to);
+//        try {
+//            this.waiting(all);
+//        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
+//        }
         this.setSpeed(10);
         while (tmp.getLenLeft() > 0) {
-            System.out.println(tmp.getLenLeft());
+//            System.out.println(tmp.getLenLeft() + " " + this.getIdTrainset());
+            System.out.println(this.getFrom().getName() + " -> " + this.getTo().getName() + " " + this.getIdTrainset());
             try {
-                Thread.sleep(100);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -209,7 +231,5 @@ public class Trainset extends Thread {
             this.run();
         }
     }
-
-
 }
 
