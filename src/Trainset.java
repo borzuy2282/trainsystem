@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class Trainset implements Runnable {
     private final String name;
     private static int forId = 0;
+    private static int forWaiting = 0;
     private final String idTrainset;
     private Locomotive head;
     private ArrayList<Car> cars;
@@ -15,8 +16,12 @@ public class Trainset implements Runnable {
     private Station from;
     private Station to;
     private Station globalTo;
+    private Rail currentRail;
+    private boolean lastStop;
     private ArrayList<Station> all;
+    private ArrayList<Station> left;
     private ArrayList<Station> past;
+    private ArrayList<Trainset> allTrainsets;
 
     Trainset(String name, Station h) {
         this.name = name;
@@ -72,14 +77,26 @@ public class Trainset implements Runnable {
         return past;
     }
 
+    public ArrayList<Station> getLeft() {
+        return left;
+    }
+
     public ArrayList<Station> getAll() {
         return all;
+    }
+
+    public ArrayList<Trainset> getAllTrainsets() {
+        return allTrainsets;
     }
     //setters
 
     public void setHead(Locomotive head) {
         this.head = head;
         weight += head.getWeight();
+    }
+
+    public void setAllTrainsets(ArrayList<Trainset> allTrainsets) {
+        this.allTrainsets = allTrainsets;
     }
 
     public void setSpeed(double speed) {
@@ -102,6 +119,11 @@ public class Trainset implements Runnable {
         this.past = past;
     }
 
+    public void setFrom(Station from) {
+        this.from = from;
+    }
+
+
     public void addCar(Car c) throws TooManyCarsException {
         if (cars.size() >= 10) {
             throw new TooManyCarsException("There are too many cars here, we gonna launch without this");
@@ -118,63 +140,66 @@ public class Trainset implements Runnable {
         }
     }
 
-    public void startRide(Station dest) {
-        globalTo = dest;
-        from = globalFrom;
+    public void startRide() {
+
         if(past == null) {
+            from = globalFrom;
+            left = new ArrayList<Station>();
+            left.addAll(all);
+            for (int i = 0; i < left.size(); i++) {
+                if(left.get(i).equals(globalFrom)){
+                    left.remove(i);
+                    break;
+                }
+            }
             ArrayList<Station> t = new ArrayList<>();
             t.add(globalFrom);
             past = t;
         }
     }
 
-    public Station pick(ArrayList<Station> where){
+    public void pick(ArrayList<Station> where) {
         int tmp = (int) (Math.random() * where.size());
-        boolean flag = true;
-        if(getPast() != null){
-            for (int i = 0; i < this.getPast().size(); i++) {
-                if (this.getPast().get(i).equals(where.get(tmp))) {
-                    flag = false;
+        setTo(where.get(tmp));
+    }
+    public void waiting() throws InterruptedException {
+        if(forWaiting <= 50) {
+            boolean flag = false;
+            for (int i = 0; i < allTrainsets.size(); i++) {
+                if (!this.getIdTrainset().equals(allTrainsets.get(i).idTrainset)) {
+                    if (this.getFrom() != null && allTrainsets.get(i).getFrom() != null) {
+                        if (allTrainsets.get(i).getFrom().equals(this.getFrom()) && allTrainsets.get(i).getTo().equals(this.getTo())) {
+                            flag = true;
+                        }
+                    }
                 }
             }
-        }
-        if(flag){
-            return where.get(tmp);
+            if (flag) {
+                System.out.println("I'm waiting " + this.getIdTrainset());
+                Thread.sleep(500);
+                forWaiting++;
+                waiting();
+
+            }
         }else{
-            return this.pick(where);
+            forWaiting = 0;
         }
     }
-//    public void waiting(ArrayList <Trainset> all) throws InterruptedException {
-//        boolean flag = true;
-//        for (int i = 0; i < all.size(); i++) {
-//            if(!this.getIdTrainset().equals(all.get(i).idTrainset)){
-//                if(this.getFrom() != null && all.get(i).getFrom() != null) {
-//                    if (all.get(i).getFrom().equals(this.getFrom()) && all.get(i).getTo().equals(this.getTo())) {
-//                        flag = false;
-//                    }
-//                }
-//            }
-//        }
-//        if(flag){
-//            System.out.println("I'm waiting " + this.getIdTrainset());
-//            this.join();
-//        }
-//    }
     @Override
     public void run(){
-        this.startRide(globalTo);
-        setTo(this.pick(getAll()));
+        this.startRide();
+        this.pick(getLeft());
 
-        Rail tmp = new Rail(this.from, this.to);
-//        try {
-//            this.waiting(all);
-//        } catch (InterruptedException e) {
-//            throw new RuntimeException(e);
-//        }
-        this.setSpeed(10);
-        while (tmp.getLenLeft() > 0) {
+        currentRail = new Rail(this.getFrom(), this.getTo());
+        try {
+            this.waiting();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        this.setSpeed(100);
+        while (currentRail.getLenLeft() > 0) {
 //            System.out.println(tmp.getLenLeft() + " " + this.getIdTrainset());
-            System.out.println(this.getFrom().getName() + " -> " + this.getTo().getName() + " " + this.getIdTrainset());
+            System.out.println(currentRail.getStation1().getName() + " -> " + currentRail.getStation2().getName() + " " + this.getIdTrainset());
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
@@ -203,9 +228,9 @@ public class Trainset implements Runnable {
                 }
             }
 
-            tmp.setLenLeft(tmp.getLenLeft() - this.getSpeed());
+            currentRail.setLenLeft(currentRail.getLenLeft() - this.getSpeed());
         }
-        System.out.println("We're here!");
+        System.out.println("We're here! " + this.getIdTrainset());
         if(getTo().equals(getGlobalTo())){
             System.out.println("We finished our trip " + globalTo.getName());
             Station temp = globalFrom;
@@ -217,6 +242,7 @@ public class Trainset implements Runnable {
                 throw new RuntimeException(e);
             }
             this.past = null;
+            this.left = getAll();
             System.out.println("We're starting our trip again!");
             this.run();
         }else{
@@ -227,9 +253,12 @@ public class Trainset implements Runnable {
                 throw new RuntimeException(e);
             }
             past.add(getTo());
-            from = to;
+            left.remove(getTo());
+            this.setFrom(this.getTo());
             this.run();
         }
     }
+
+
 }
 

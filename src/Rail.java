@@ -19,13 +19,11 @@ public class Rail {
         return station2;
     }
 
-    public double getLength() {
-        return length;
-    }
 
     public double getLenLeft() {
         return lenLeft;
     }
+
 //  setters
 
     public void setLenLeft(double lenLeft) {
