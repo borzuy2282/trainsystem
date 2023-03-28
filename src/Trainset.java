@@ -190,7 +190,7 @@ public class Trainset implements Runnable {
         this.startRide();
         this.pick(getLeft());
 
-        currentRail = new Rail(this.getFrom(), this.getTo());
+        currentRail = new Rail(this.getFrom(), this.getTo(), 1250);
         try {
             this.waiting();
         } catch (InterruptedException e) {

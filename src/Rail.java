@@ -1,13 +1,16 @@
-public class Rail {
+import java.util.Random;
+
+public class Rail implements Runnable{
+    private Trainset currentTrain;
     private Station station1;
     private Station station2;
     private final double length;
     private double lenLeft;
 
-    public Rail(Station station1, Station station2) {
+    public Rail(Station station1, Station station2, double length) {
         this.station1 = station1;
         this.station2 = station2;
-        length = Math.random() * 1000 + 100;
+        this.length = length;
         lenLeft = length;
     }
 //  getters
@@ -24,10 +27,50 @@ public class Rail {
         return lenLeft;
     }
 
-//  setters
+    public Trainset getCurrentTrain() {
+        return currentTrain;
+    }
+
+    public double getLength() {
+        return length;
+    }
+    //  setters
 
     public void setLenLeft(double lenLeft) {
         this.lenLeft = lenLeft;
+    }
+
+    public void setCurrentTrain(Trainset currentTrain) {
+        this.currentTrain = currentTrain;
+    }
+
+    @Override
+    public void run() {
+        while(currentTrain != null){
+            Random rand = new Random();
+            int r = rand.nextInt(2);
+            if (r == 0) {
+                if (currentTrain.getSpeed() + currentTrain.getSpeed() * 0.03 < 200) {
+                    currentTrain.setSpeed(currentTrain.getSpeed() + currentTrain.getSpeed() * 0.03);
+                } else {
+                    try {
+                        throw new RailroadHazardException("Too much, we won't speed up");
+                    } catch (RailroadHazardException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            } else {
+                if (currentTrain.getSpeed() - currentTrain.getSpeed() * 0.03 > 0) {
+                    currentTrain.setSpeed(currentTrain.getSpeed() - currentTrain.getSpeed() * 0.03);
+                } else {
+                    try {
+                        throw new RailroadHazardException("We can't stop, we will go on current speed");
+                    } catch (RailroadHazardException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        }
     }
 
     //    funcs
