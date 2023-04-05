@@ -1,6 +1,6 @@
 import java.util.Random;
 
-public class Rail implements Runnable{
+public class Rail{
     private Trainset currentTrain;
     private Station station1;
     private Station station2;
@@ -44,9 +44,10 @@ public class Rail implements Runnable{
         this.currentTrain = currentTrain;
     }
 
-    @Override
+/*    @Override
     public void run() {
         while(currentTrain != null){
+
             Random rand = new Random();
             int r = rand.nextInt(2);
             if (r == 0) {
@@ -73,8 +74,9 @@ public class Rail implements Runnable{
         }
     }
 
-    //    funcs
-//    public boolean isConnect(Station s){
-//        return this.getStation1().equals(s) || this.getStation2().equals(s);
-//    }
+//        funcs
+    public boolean isConnect(Station s){
+        return this.getStation1().equals(s) || this.getStation2().equals(s);
+    }
+ */
 }

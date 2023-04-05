@@ -1,6 +1,10 @@
 import Cars.Car;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+import java.util.Stack;
 
 public class Trainset implements Runnable {
     private final String name;
@@ -17,10 +21,10 @@ public class Trainset implements Runnable {
     private Station to;
     private Station globalTo;
     private Rail currentRail;
-    private boolean lastStop;
+    private ArrayList<Station> route;
     private ArrayList<Station> all;
     private ArrayList<Station> left;
-    private ArrayList<Station> past;
+    private ArrayList<Station> past = new ArrayList<>();
     private ArrayList<Trainset> allTrainsets;
 
     Trainset(String name, Station h) {
@@ -67,6 +71,10 @@ public class Trainset implements Runnable {
 
     public Station getTo() {
         return to;
+    }
+
+    public ArrayList<Station> getRoute() {
+        return route;
     }
 
     public Station getGlobalTo() {
@@ -129,7 +137,7 @@ public class Trainset implements Runnable {
             throw new TooManyCarsException("There are too many cars here, we gonna launch without this");
         } else if (weight >= 1000) {
             throw new TooManyCarsException("We're too heavy, we can't go with this car");
-        } else if (electricalCars >= 6) {
+        } else if (electricalCars >= 4) {
             throw new TooManyCarsException("We have no power to join this car");
         } else {
             cars.add(c);
@@ -139,9 +147,19 @@ public class Trainset implements Runnable {
             }
         }
     }
+    /*public Station choose(){
+        ArrayList<Station> temp = from.getCons();
+        int tmp = new Random().nextInt(0, temp.size());
+        if(temp.get(tmp).isConnected(from)){
+            return temp.get(tmp);
+        }
+    }*/
 
     public void startRide() {
 
+        /*do{
+
+        }
         if(past == null) {
             from = globalFrom;
             left = new ArrayList<Station>();
@@ -155,14 +173,43 @@ public class Trainset implements Runnable {
             ArrayList<Station> t = new ArrayList<>();
             t.add(globalFrom);
             past = t;
-        }
+        }*/
     }
 
-    public void pick(ArrayList<Station> where) {
-        int tmp = (int) (Math.random() * where.size());
-        setTo(where.get(tmp));
+    public void pick() {
+        Map <Station, Station> parentMap = new HashMap<>();
+        route = new ArrayList<>();
+        parentMap.put(this.globalFrom, null);
+        Stack <Station> st = new Stack<>();
+        st.push(this.globalFrom);
+        while(!st.empty()){
+            Station current = st.pop();
+            this.past.add(current);
+
+            if(current.equals(this.globalTo)){
+                while (current != null){
+                    route.add(0, current);
+                    current = parentMap.get(current);
+
+                }
+                break;
+            }
+            for(Station s : current.getCons()){
+                boolean flag = true;
+                for(Station ps : this.past){
+                    if(s.equals(ps)){
+                        flag = false;
+                    }
+                }
+                if(flag){
+                    st.push(s);
+                    past.add(s);
+                    parentMap.put(s, current);
+                }
+            }
+        }
     }
-    public void waiting() throws InterruptedException {
+    public void waiting(){
         if(forWaiting <= 50) {
             boolean flag = false;
             for (int i = 0; i < allTrainsets.size(); i++) {
@@ -176,7 +223,11 @@ public class Trainset implements Runnable {
             }
             if (flag) {
                 System.out.println("I'm waiting " + this.getIdTrainset());
-                Thread.sleep(500);
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException("Smth went wrong");
+                }
                 forWaiting++;
                 waiting();
 
@@ -187,15 +238,13 @@ public class Trainset implements Runnable {
     }
     @Override
     public void run(){
-        this.startRide();
-        this.pick(getLeft());
-
-        currentRail = new Rail(this.getFrom(), this.getTo(), 1250);
-        try {
-            this.waiting();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        if(route == null){
+            this.pick();
         }
+//
+        Random rand = new Random();
+        currentRail = from.getConnection().get(rand.nextInt(0, from.getConnection().size()));
+        this.waiting();
         this.setSpeed(100);
         while (currentRail.getLenLeft() > 0) {
 //            System.out.println(tmp.getLenLeft() + " " + this.getIdTrainset());
