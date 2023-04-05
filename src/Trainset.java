@@ -24,7 +24,7 @@ public class Trainset implements Runnable {
     private ArrayList<Station> route;
     private ArrayList<Station> all;
     private ArrayList<Station> left;
-    private ArrayList<Station> past = new ArrayList<>();
+    private ArrayList<Station> past;
     private ArrayList<Trainset> allTrainsets;
 
     Trainset(String name, Station h) {
@@ -177,6 +177,7 @@ public class Trainset implements Runnable {
     }
 
     public void pick() {
+        past = new ArrayList<>();
         Map <Station, Station> parentMap = new HashMap<>();
         route = new ArrayList<>();
         parentMap.put(this.globalFrom, null);
@@ -238,13 +239,78 @@ public class Trainset implements Runnable {
     }
     @Override
     public void run(){
+        Random rand = new Random();
         if(route == null){
             this.pick();
         }
+        this.setSpeed(50);
+        System.out.println("Route is: ");
+        for(Station s : this.route){
+            System.out.print(s.getName() + " ");
+        }
+        System.out.println();
+        for(int i = 0; i < route.size() - 1; i++){
+            Rail tmp = route.get(i).getConnection().get(i);
+            double lenLeft = tmp.getLength();
+            while(lenLeft > 0){
+                System.out.println(route.get(i).getName() + " -> " + route.get(i + 1).getName() + " " + lenLeft);
+                lenLeft -= this.speed;
+                if(lenLeft <= 0){
+                    break;
+                }
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                int probability = rand.nextInt(0, 100);
+                if(probability < 50){
+                    if(this.speed - this.speed * 0.03 <= 0){
+                        try {
+                            throw new RailroadHazardException("We can't stop!");
+                        } catch (RailroadHazardException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }else{
+                        this.speed -= this.speed * 0.03;
+                    }
+                }else{
+                    if(this.speed + this.speed*0.03 > 200){
+                        try {
+                            throw new RailroadHazardException("Too fast dude!");
+                        } catch (RailroadHazardException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }else {
+                        this.speed += this.speed * 0.03;
+                    }
+                }
+
+            }
+            System.out.println("We came on a station: " + route.get(i + 1).getName());
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        System.out.println("We're on a destination station");
+        route = null;
+        Station tmp = this.globalFrom;
+        globalFrom = globalTo;
+        globalTo = tmp;
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        this.run();
+        /*
 //
-        Random rand = new Random();
-        currentRail = from.getConnection().get(rand.nextInt(0, from.getConnection().size()));
-        this.waiting();
+//        Random rand = new Random();
+//        currentRail = from.getConnection().get(rand.nextInt(0, from.getConnection().size()));
+//        this.waiting();
+
         this.setSpeed(100);
         while (currentRail.getLenLeft() > 0) {
 //            System.out.println(tmp.getLenLeft() + " " + this.getIdTrainset());
@@ -293,6 +359,7 @@ public class Trainset implements Runnable {
             this.past = null;
             this.left = getAll();
             System.out.println("We're starting our trip again!");
+            this.route = null;
             this.run();
         }else{
             System.out.println(getTo().getName());
@@ -305,7 +372,7 @@ public class Trainset implements Runnable {
             left.remove(getTo());
             this.setFrom(this.getTo());
             this.run();
-        }
+        }*/
     }
 
 

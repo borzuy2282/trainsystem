@@ -29,7 +29,9 @@ public class Test {
         a.add(s4);
         s1.addCons(s2);
         s1.addCons(s3);
+        s3.addCons(s4);
         s2.addCons(s4);
+
 
 //        a.add(s5);
 //        a.add(s6);
@@ -53,12 +55,8 @@ public class Test {
         t2.setAllTrainsets(t);
         Thread thread1 = new Thread(t1);
         Thread thread2 = new Thread(t2);
-        t1.pick();
-        System.out.println("Route is: ");
-        for(Station s : t1.getRoute()){
-            System.out.print(s.getName() + " ");
-        }
-//        thread1.start();
+
+        thread1.start();
 //        thread2.start();
 
 
