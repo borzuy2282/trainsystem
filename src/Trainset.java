@@ -210,8 +210,9 @@ public class Trainset implements Runnable {
             }
         }
     }
-    public void waiting(){
-        if(forWaiting <= 50) {
+    public synchronized void waiting(){
+
+        /*if(forWaiting <= 50) {
             boolean flag = false;
             for (int i = 0; i < allTrainsets.size(); i++) {
                 if (!this.getIdTrainset().equals(allTrainsets.get(i).idTrainset)) {
@@ -235,7 +236,7 @@ public class Trainset implements Runnable {
             }
         }else{
             forWaiting = 0;
-        }
+        }*/
     }
     @Override
     public void run(){
@@ -248,59 +249,66 @@ public class Trainset implements Runnable {
         for(Station s : this.route){
             System.out.print(s.getName() + " ");
         }
-        System.out.println();
+        System.out.println(this.getIdTrainset());
         for(int i = 0; i < route.size() - 1; i++){
+            from = route.get(i);
             Rail tmp = route.get(i).getConnection().get(i);
+            tmp.setCurrentTrain(this);
             double lenLeft = tmp.getLength();
-            while(lenLeft > 0){
-                System.out.println(route.get(i).getName() + " -> " + route.get(i + 1).getName() + " " + lenLeft);
-                lenLeft -= this.speed;
-                if(lenLeft <= 0){
-                    break;
-                }
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-                int probability = rand.nextInt(0, 100);
-                if(probability < 50){
-                    if(this.speed - this.speed * 0.03 <= 0){
-                        try {
-                            throw new RailroadHazardException("We can't stop!");
-                        } catch (RailroadHazardException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }else{
-                        this.speed -= this.speed * 0.03;
+            try{
+                while(lenLeft > 0) {
+                    System.out.println(route.get(i).getName() + " -> " + route.get(i + 1).getName() + " " + lenLeft + " " + this.getIdTrainset());
+                    lenLeft -= this.speed;
+                    if (lenLeft <= 0) {
+                        break;
                     }
-                }else{
-                    if(this.speed + this.speed*0.03 > 200){
-                        try {
-                            throw new RailroadHazardException("Too fast dude!");
-                        } catch (RailroadHazardException e) {
-                            throw new RuntimeException(e);
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    int probability = rand.nextInt(0, 100);
+                    if (probability < 50) {
+                        if (this.speed - this.speed * 0.03 <= 0) {
+                            try {
+                                throw new RailroadHazardException("We can't stop!");
+                            } catch (RailroadHazardException e) {
+                                throw new RuntimeException(e);
+                            }
+                        } else {
+                            this.speed -= this.speed * 0.03;
                         }
-                    }else {
-                        this.speed += this.speed * 0.03;
+                    } else {
+                        if (this.speed + this.speed * 0.03 > 200) {
+                            try {
+                                throw new RailroadHazardException("Too fast dude!");
+                            } catch (RailroadHazardException e) {
+                                throw new RuntimeException(e);
+                            }
+                        } else {
+                            this.speed += this.speed * 0.03;
+                        }
                     }
                 }
-
+            }catch (RuntimeException e){
+                System.out.println(e.getMessage());
+            }finally {
+                tmp.resetCurrentTrain();
             }
-            System.out.println("We came on a station: " + route.get(i + 1).getName());
+            System.out.println("We came on a station: " + route.get(i + 1).getName() + " " + this.getIdTrainset());
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
-        System.out.println("We're on a destination station");
+        System.out.println("We're on a destination station " + this.getIdTrainset());
         route = null;
         Station tmp = this.globalFrom;
         globalFrom = globalTo;
         globalTo = tmp;
         try {
-            Thread.sleep(5000);
+            Thread.sleep(3000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

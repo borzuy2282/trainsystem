@@ -20,16 +20,16 @@ public class Test {
         Station s15 = new Station("Mysz");
         Station s16 = new Station("Krakow");
         Trainset t1 = new Trainset("Zhuj", s1);
-        Trainset t2 = new Trainset("Barabulka", s2);
+        Trainset t2 = new Trainset("Barabulka", s1);
         ArrayList <Trainset> t = new ArrayList<Trainset>();
         ArrayList <Station> a = (new ArrayList<Station>());
         a.add(s1);
         a.add(s2);
-        a.add(s3);
+//        a.add(s3);
         a.add(s4);
         s1.addCons(s2);
-        s1.addCons(s3);
-        s3.addCons(s4);
+//        s1.addCons(s3);
+//        s3.addCons(s4);
         s2.addCons(s4);
 
 
@@ -50,14 +50,14 @@ public class Test {
         t1.setAll(a);
         t1.setGlobalTo(s4);
         t2.setAll(a);
-        t2.setGlobalTo(s5);
+        t2.setGlobalTo(s4);
         t1.setAllTrainsets(t);
         t2.setAllTrainsets(t);
         Thread thread1 = new Thread(t1);
         Thread thread2 = new Thread(t2);
 
         thread1.start();
-//        thread2.start();
+        thread2.start();
 
 
     }

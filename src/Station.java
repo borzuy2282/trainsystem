@@ -42,10 +42,10 @@ public class Station {
         double len = rand.nextDouble(100, 1000);
         Rail rail = new Rail(this, s2, len);
         connection.add(rail);
-        s2.addCons(this, len);
+        s2.addCons(this, rail);
     }
-    private void addCons(Station s2, double len){
+    private void addCons(Station s2, Rail rail){
         cons.add(s2);
-        connection.add(new Rail(this, s2, len));
+        connection.add(rail);
     }
 }
