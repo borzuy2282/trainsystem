@@ -16,6 +16,10 @@ public class Station {
         return name;
     }
 
+    public String getIdStation() {
+        return idStation;
+    }
+
     public ArrayList<Station> getCons() {
         return cons;
     }

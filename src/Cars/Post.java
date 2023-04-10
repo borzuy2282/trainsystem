@@ -6,7 +6,7 @@ public class Post extends Car{
     private final boolean electricity = true;
     private int crew;
 
-    Post(String n) {
+    public Post(String n) {
         super(n);
     }
 //    getters

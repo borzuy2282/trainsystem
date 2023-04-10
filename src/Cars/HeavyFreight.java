@@ -6,7 +6,7 @@ public class HeavyFreight extends Freight{
     private final double capacity = 90;
     private final boolean electricity = false;
     private double loaded;
-    HeavyFreight(String n) {
+    public HeavyFreight(String n) {
         super(n);
     }
 

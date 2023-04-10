@@ -6,7 +6,7 @@ public class Freight extends Car{
     private final double capacity = 45;
     private final boolean electricity = false;
     private double loaded;
-    Freight(String n) {
+    public Freight(String n) {
         super(n);
     }
 

@@ -4,7 +4,7 @@ public class Refrigerated extends Freight{
     private final boolean electricity = true;
     private double weightNetto = 25;
 
-    Refrigerated(String n) {
+    public Refrigerated(String n) {
         super(n);
 
     }

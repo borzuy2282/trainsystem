@@ -8,7 +8,7 @@ public class Restaurant extends Car {
     private int waiters;
     private int cookers;
 
-    Restaurant(String n) {
+    public Restaurant(String n) {
         super(n);
     }
 //    getters

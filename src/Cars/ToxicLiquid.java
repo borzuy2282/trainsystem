@@ -1,7 +1,7 @@
 package Cars;
 
 public class ToxicLiquid extends HeavyFreight{
-    ToxicLiquid(String n) {
+    public ToxicLiquid(String n) {
         super(n);
     }
 }
