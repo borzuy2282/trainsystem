@@ -26,6 +26,7 @@ public class Trainset implements Runnable {
     private ArrayList<Station> left;
     private ArrayList<Station> past;
     private ArrayList<Trainset> allTrainsets;
+    private double lenLeft;
 
     Trainset(String name, Station h) {
         this.name = name;
@@ -39,6 +40,10 @@ public class Trainset implements Runnable {
 
     public String getIdTrainset() {
         return idTrainset;
+    }
+
+    public double getLenLeft() {
+        return lenLeft;
     }
 
     public Locomotive getHead() {
@@ -103,6 +108,10 @@ public class Trainset implements Runnable {
         weight += head.getWeight();
     }
 
+    public void setCurrentRail(Rail currentRail) {
+        this.currentRail = currentRail;
+    }
+
     public void setAllTrainsets(ArrayList<Trainset> allTrainsets) {
         this.allTrainsets = allTrainsets;
     }
@@ -133,6 +142,9 @@ public class Trainset implements Runnable {
 
 
     public void addCar(Car c) throws TooManyCarsException {
+        if(cars == null){
+            cars = new ArrayList<Car>();
+        }
         if (cars.size() >= 10) {
             throw new TooManyCarsException("There are too many cars here, we gonna launch without this");
         } else if (weight >= 1000) {
@@ -253,8 +265,16 @@ public class Trainset implements Runnable {
         for(int i = 0; i < route.size() - 1; i++){
             from = route.get(i);
             Rail tmp = route.get(i).getConnection().get(i);
+            while(tmp.getCurrentTrain() != null){
+                try{
+                    Thread.sleep(100);
+                }catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
             tmp.setCurrentTrain(this);
-            double lenLeft = tmp.getLength();
+            this.setCurrentRail(tmp);
+            lenLeft = tmp.getLength();
             try{
                 while(lenLeft > 0) {
                     System.out.println(route.get(i).getName() + " -> " + route.get(i + 1).getName() + " " + lenLeft + " " + this.getIdTrainset());
@@ -293,7 +313,8 @@ public class Trainset implements Runnable {
             }catch (RuntimeException e){
                 System.out.println(e.getMessage());
             }finally {
-                tmp.resetCurrentTrain();
+                tmp.setCurrentTrain(null);
+                this.setCurrentRail(null);
             }
             System.out.println("We came on a station: " + route.get(i + 1).getName() + " " + this.getIdTrainset());
             try {
@@ -383,6 +404,17 @@ public class Trainset implements Runnable {
         }*/
     }
 
-
+    @Override
+    public String toString() {
+        String car = "";
+        String routes = "";
+        for(Station s : this.route){
+            routes = routes + s.getName() + " ";
+        }
+        for(Car c : this.cars){
+            car = car + c.getCarId();
+        }
+        return this.name + ", " + this.getIdTrainset() + ": head:" + getHead() + ", cars: " + car + ", route: " + this.route;
+    }
 }
 

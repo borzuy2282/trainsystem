@@ -1,3 +1,5 @@
+import Cars.Restaurant;
+
 import java.util.ArrayList;
 
 public class Test {
@@ -20,7 +22,7 @@ public class Test {
         Station s15 = new Station("Mysz");
         Station s16 = new Station("Krakow");
         Trainset t1 = new Trainset("Zhuj", s1);
-        Trainset t2 = new Trainset("Barabulka", s1);
+        Trainset t2 = new Trainset("Barabulka", s2);
         ArrayList <Trainset> t = new ArrayList<Trainset>();
         ArrayList <Station> a = (new ArrayList<Station>());
         a.add(s1);
@@ -50,14 +52,58 @@ public class Test {
         t1.setAll(a);
         t1.setGlobalTo(s4);
         t2.setAll(a);
-        t2.setGlobalTo(s4);
+        t2.setGlobalTo(s1);
         t1.setAllTrainsets(t);
         t2.setAllTrainsets(t);
         Thread thread1 = new Thread(t1);
         Thread thread2 = new Thread(t2);
 
-        thread1.start();
-        thread2.start();
+
+        try {
+            t1.addCar(new Cars.Passenger("Zhuj"));
+        } catch (TooManyCarsException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            t1.addCar(new Cars.Post("Bluy"));
+        } catch (TooManyCarsException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            t1.addCar(new Cars.Restaurant("Chuj"));
+        } catch (TooManyCarsException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            t2.addCar(new Cars.Passenger("Zhuj"));
+        } catch (TooManyCarsException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            t2.addCar(new Cars.Post("Bluy"));
+        } catch (TooManyCarsException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            t2.addCar(new Cars.Restaurant("Chuj"));
+        } catch (TooManyCarsException e) {
+            throw new RuntimeException(e);
+        }
+        Locomotive l = new Locomotive("qwer");
+        ArrayList <Locomotive> locomotives = new ArrayList<>();
+        locomotives.add(l1);
+        ArrayList <Cars.Car> cars = new ArrayList<>();
+        Restaurant r = new Restaurant("asdfg");
+        cars.add(r);
+        FileWriting test = new FileWriting(t);
+        Thread fileWrite = new Thread(test);
+        Menu menu = new Menu(a, locomotives, cars, t);
+//        fileWrite.start();
+//        thread1.start();
+//        thread2.start();
+        menu.start();
+
+
 
 
     }

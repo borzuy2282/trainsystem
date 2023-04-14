@@ -52,4 +52,13 @@ public class Station {
         cons.add(s2);
         connection.add(rail);
     }
+
+    @Override
+    public String toString() {
+        String names = "";
+        for(Station s : cons){
+            names = names + s.getName() + " ";
+        }
+        return this.name + ", " + this.idStation + ": [" + names + "].";
+    }
 }

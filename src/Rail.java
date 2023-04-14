@@ -2,7 +2,7 @@ import java.util.Random;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Rail{
-    private ReentrantLock lock;
+//    private ReentrantLock lock;
     private Trainset currentTrain;
     private Station station1_1;
     private Station station1_2;
@@ -18,7 +18,7 @@ public class Rail{
         this.station2_2 = station1;
         this.length = length;
         lenLeft = length;
-        this.lock = new ReentrantLock();
+//        this.lock = new ReentrantLock();
     }
 //  getters
     public Station getStation1_1() {
@@ -53,13 +53,13 @@ public class Rail{
     }
 
     public void setCurrentTrain(Trainset currentTrain) {
-        lock.lock();
+//        lock.lock();
         this.currentTrain = currentTrain;
     }
-    public void resetCurrentTrain(){
-        this.currentTrain = null;
-        lock.unlock();
-    }
+//    public void resetCurrentTrain(){
+//        this.currentTrain = null;
+//        lock.unlock();
+//    }
 
 /*    @Override
     public void run() {
