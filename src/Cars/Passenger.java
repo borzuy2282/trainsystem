@@ -33,13 +33,15 @@ public class Passenger extends Car{
         return electricity;
     }
 //    funcs:
-    public void fillTheTrain(int p) throws TooManyPeopleException {
+    public void fillTrain(int p) throws TooManyPeopleException {
         if(places >= p){
             people = p;
             weightBrutto = weightNetto + people;
         }else{
             throw new TooManyPeopleException("No way we can fit those people, try to re-sell them tickets.");
         }
-
+    }
+    public void fillTrain(double p){
+        throw new IllegalArgumentException("How can you get half of a person?");
     }
 }

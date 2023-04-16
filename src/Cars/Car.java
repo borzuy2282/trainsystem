@@ -31,4 +31,19 @@ abstract public class Car {
     public boolean isElectricity() {
         return electricity;
     }
+
+    @Override
+    public String toString() {
+        return name + ", " + carId + ", current weight: " + weightBrutto;
+    }
+    public void fillTrain(int i) throws TooManyPeopleException{
+
+    }
+    public void fillTrain(double i) throws TooManyPeopleException{
+
+    }
+    public void printInfo(){
+
+    }
 }
+

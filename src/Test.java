@@ -1,3 +1,4 @@
+import Cars.Passenger;
 import Cars.Restaurant;
 
 import java.util.ArrayList;
@@ -92,16 +93,18 @@ public class Test {
         Locomotive l = new Locomotive("qwer");
         ArrayList <Locomotive> locomotives = new ArrayList<>();
         locomotives.add(l1);
+        t1.setHead(l1);
         ArrayList <Cars.Car> cars = new ArrayList<>();
         Restaurant r = new Restaurant("asdfg");
-        cars.add(r);
-        FileWriting test = new FileWriting(t);
-        Thread fileWrite = new Thread(test);
+        Passenger p = new Passenger("qee");
+        cars.add(p);
+//        FileWriting test = new FileWriting(t);
+//        Thread fileWrite = new Thread(test);
         Menu menu = new Menu(a, locomotives, cars, t);
 //        fileWrite.start();
 //        thread1.start();
 //        thread2.start();
-        menu.start();
+       menu.start();
 
 
 

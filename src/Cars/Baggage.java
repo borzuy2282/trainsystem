@@ -30,7 +30,7 @@ public class Baggage extends Car {
         return electricity;
     }
 //    funcs
-    public void fillTheTrain(double s) throws TooManyPeopleException{
+    public void fillTrain(double s) throws TooManyPeopleException{
         if(s > availablePlace){
             throw new TooManyPeopleException("You are taking too much, this car can't fill it inside");
         }else{

@@ -28,6 +28,9 @@ public class FileWriting implements Runnable{
     }
     public static String printingCars(Trainset t){
         ArrayList <Car> cars = t.getCars();
+        if(cars == null){
+            return "";
+        }
         for (int i = 0; i < cars.size() - 1; i++) {
             if(cars.get(i).getWeightBrutto() > cars.get(i+1).getWeightBrutto()){
                 Car tmp = cars.get(i);
@@ -60,6 +63,7 @@ public class FileWriting implements Runnable{
             for(Trainset t : sorted){
                 bw.write(t.getIdTrainset() + ", length left: " + t.getLenLeft() + ". " + printingCars(t) + "\n");
             }
+            bw.flush();
             bw.close();
         }catch (IOException e){
             e.printStackTrace();

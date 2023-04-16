@@ -52,6 +52,18 @@ public class Station {
         cons.add(s2);
         connection.add(rail);
     }
+    public void removeCons(Station s2){
+        Rail r;
+        for(Rail i : this.connection){
+            if(i.getStation1_1().equals(s2) || i.getStation1_2().equals(s2)){
+                s2.connection.remove(i);
+                connection.remove(i);
+                break;
+            }
+        }
+        this.cons.remove(s2);
+        s2.cons.remove(this);
+    }
 
     @Override
     public String toString() {
@@ -59,6 +71,6 @@ public class Station {
         for(Station s : cons){
             names = names + s.getName() + " ";
         }
-        return this.name + ", " + this.idStation + ": [" + names + "].";
+        return this.name + ", " + this.idStation + ", its connections: [" + names + "].";
     }
 }

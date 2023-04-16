@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Stack;
 
-public class Trainset implements Runnable {
+public class Trainset extends Thread {
     private final String name;
     private static int forId = 0;
     private static int forWaiting = 0;
@@ -27,6 +27,7 @@ public class Trainset implements Runnable {
     private ArrayList<Station> past;
     private ArrayList<Trainset> allTrainsets;
     private double lenLeft;
+    private boolean stopper = true;
 
     Trainset(String name, Station h) {
         this.name = name;
@@ -112,6 +113,18 @@ public class Trainset implements Runnable {
         this.currentRail = currentRail;
     }
 
+    public void setWeight(double weight) {
+        this.weight = weight;
+    }
+
+    public void setCars(ArrayList<Car> cars) {
+        this.cars = cars;
+    }
+
+    public void setElectricalCars(int electricalCars) {
+        this.electricalCars = electricalCars;
+    }
+
     public void setAllTrainsets(ArrayList<Trainset> allTrainsets) {
         this.allTrainsets = allTrainsets;
     }
@@ -140,6 +153,9 @@ public class Trainset implements Runnable {
         this.from = from;
     }
 
+    public void setStopper(boolean stopper) {
+        this.stopper = stopper;
+    }
 
     public void addCar(Car c) throws TooManyCarsException {
         if(cars == null){
@@ -159,13 +175,6 @@ public class Trainset implements Runnable {
             }
         }
     }
-    /*public Station choose(){
-        ArrayList<Station> temp = from.getCons();
-        int tmp = new Random().nextInt(0, temp.size());
-        if(temp.get(tmp).isConnected(from)){
-            return temp.get(tmp);
-        }
-    }*/
 
     public void startRide() {
 
@@ -222,6 +231,11 @@ public class Trainset implements Runnable {
             }
         }
     }
+    public void removeCar(Car car){
+        electricalCars--;
+        weight -= car.getWeightBrutto();
+        cars.remove(car);
+    }
     public synchronized void waiting(){
 
         /*if(forWaiting <= 50) {
@@ -250,8 +264,15 @@ public class Trainset implements Runnable {
             forWaiting = 0;
         }*/
     }
+    public void stopper(){
+        setStopper(false);
+    }
     @Override
     public void run(){
+        if(head == null){
+            System.out.println("Sorry, we can't launch without a locomotive");
+            return;
+        }
         Random rand = new Random();
         if(route == null){
             this.pick();
@@ -278,7 +299,11 @@ public class Trainset implements Runnable {
             try{
                 while(lenLeft > 0) {
                     System.out.println(route.get(i).getName() + " -> " + route.get(i + 1).getName() + " " + lenLeft + " " + this.getIdTrainset());
-                    lenLeft -= this.speed;
+                    if(lenLeft - this.speed >= 0){
+                        lenLeft -= this.speed;
+                    }else{
+                        lenLeft = 0;
+                    }
                     if (lenLeft <= 0) {
                         break;
                     }
@@ -312,10 +337,9 @@ public class Trainset implements Runnable {
                 }
             }catch (RuntimeException e){
                 System.out.println(e.getMessage());
-            }finally {
-                tmp.setCurrentTrain(null);
-                this.setCurrentRail(null);
             }
+            tmp.setCurrentTrain(null);
+            this.setCurrentRail(null);
             System.out.println("We came on a station: " + route.get(i + 1).getName() + " " + this.getIdTrainset());
             try {
                 Thread.sleep(2000);
@@ -333,7 +357,9 @@ public class Trainset implements Runnable {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        this.run();
+        if(stopper){
+            this.run();
+        }
         /*
 //
 //        Random rand = new Random();

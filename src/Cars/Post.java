@@ -30,7 +30,7 @@ public class Post extends Car{
         return crew;
     }
 //    funcs
-    public void addCrew(int n) throws TooManyPeopleException{
+    public void fillTrain(int n) throws TooManyPeopleException{
         if(n <= 10 && n >= 3){
             crew = n;
             weightBrutto = weightNetto + (n * 0.1);
