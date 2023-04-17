@@ -49,7 +49,7 @@ public class Test {
 //        a.add(s15);
 //        a.add(s16);
         t.add(t1);
-        t.add(t2);
+//        t.add(t2);
         t1.setAll(a);
         t1.setGlobalTo(s4);
         t2.setAll(a);
@@ -101,10 +101,13 @@ public class Test {
 //        FileWriting test = new FileWriting(t);
 //        Thread fileWrite = new Thread(test);
         Menu menu = new Menu(a, locomotives, cars, t);
+        FileWriting fw = new FileWriting(menu.getTrainsets(), menu);
 //        fileWrite.start();
 //        thread1.start();
 //        thread2.start();
        menu.start();
+       fw.start();
+
 
 
 

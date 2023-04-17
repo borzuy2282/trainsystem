@@ -23,6 +23,14 @@ public class Station {
     public ArrayList<Station> getCons() {
         return cons;
     }
+    public Rail getRail(Station s2){
+        for(Rail r : connection){
+            if(r.getStation1_1() == this && r.getStation2_1() == s2 || r.getStation2_2() == this && r.getStation1_2() == s2){
+                return r;
+            }
+        }
+        return null;
+    }
 
     public boolean isConnected(Station s2){
         for(Station s : cons){

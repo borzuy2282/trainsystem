@@ -24,6 +24,7 @@ public class Trainset extends Thread {
     private ArrayList<Station> route;
     private ArrayList<Station> all;
     private ArrayList<Station> left;
+    private ArrayList<Station> passed;
     private ArrayList<Station> past;
     private ArrayList<Trainset> allTrainsets;
     private double lenLeft;
@@ -283,8 +284,10 @@ public class Trainset extends Thread {
             System.out.print(s.getName() + " ");
         }
         System.out.println(this.getIdTrainset());
+        passed = new ArrayList<>();
         for(int i = 0; i < route.size() - 1; i++){
             from = route.get(i);
+            to = route.get(i + 1);
             Rail tmp = route.get(i).getConnection().get(i);
             while(tmp.getCurrentTrain() != null){
                 try{
@@ -338,6 +341,7 @@ public class Trainset extends Thread {
             }catch (RuntimeException e){
                 System.out.println(e.getMessage());
             }
+            passed.add(route.get(i));
             tmp.setCurrentTrain(null);
             this.setCurrentRail(null);
             System.out.println("We came on a station: " + route.get(i + 1).getName() + " " + this.getIdTrainset());
@@ -432,15 +436,33 @@ public class Trainset extends Thread {
 
     @Override
     public String toString() {
-        String car = "";
+        String car = FileWriting.printingCars(this);
+        String source;
+        String dest;
+        String from;
+        String to;
+        double routeLen = 0;
+        double curRouteLen = 0;
+        double routeLenPas = 0;
+
         String routes = "";
-        for(Station s : this.route){
-            routes = routes + s.getName() + " ";
+        if(this.route == null){
+            return this.name + ", " + this.getIdTrainset() + ": head:" + getHead().getIdLocomotive() + ", cars: " + car + ", didn't start its ride yet.";
+        }else {
+            source = globalFrom.getIdStation();
+            dest = globalTo.getIdStation();
+            from = this.from.getIdStation();
+            to = this.to.getIdStation();
+            for (int i = 0; i < route.size() - 1; i++) {
+                routeLen += route.get(i).getRail(route.get(i+1)).getLength();
+            }
+            curRouteLen = this.from.getRail(this.to).getLength();
+            for(int i = 0; i < passed.size() - 1; i++){
+                routeLenPas += passed.get(i).getRail(passed.get(i+1)).getLength();
+            }
+            routeLenPas += lenLeft;
         }
-        for(Car c : this.cars){
-            car = car + c.getCarId();
-        }
-        return this.name + ", " + this.getIdTrainset() + ": head:" + getHead() + ", cars: " + car + ", route: " + this.route;
+        return this.name + ", " + this.getIdTrainset() + ": head:" + getHead().getIdLocomotive() + ", cars: " + car + ", home st.: " + source + ". Destination: "+ dest + ". Passed already: " + (routeLenPas / routeLen * 100) + "%. Current from station: " + from + ", current destination: " + to + ". Passed already: " + ((1 - lenLeft/curRouteLen) * 100) + "%.";
     }
 }
 

@@ -68,7 +68,7 @@ public class Menu extends Thread {
                 removeStation();
             }case 15 ->{
                 for(Trainset t : threads){
-                    t.setStopper(false);
+                    t.stop();
                 }
                 setStopper(false);
             }
@@ -461,6 +461,9 @@ public class Menu extends Thread {
         boolean flag = false;
         for(Trainset t : trainsets){
             if(t.getIdTrainset().equals(trainsetID)){
+                if(t.isAlive()){
+                    t.stop();
+                }
                 trainsets.remove(t);
                 flag = true;
                 break;
@@ -739,12 +742,14 @@ public class Menu extends Thread {
         this.stopper = stopper;
     }
 
+    public ArrayList<Trainset> getTrainsets() {
+        return trainsets;
+    }
+
     @Override
     public void run() {
+
         while (stopper){
-//            FileWriting test = new FileWriting(trainsets);
-//            Thread fileWrite = new Thread(test);
-//            fileWrite.start();
             this.mainMenu();
         }
     }
