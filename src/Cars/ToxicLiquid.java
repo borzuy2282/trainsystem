@@ -2,7 +2,7 @@ package Cars;
 
 public class ToxicLiquid extends Car implements HeavyFreightInt{
     private Liquid liquid;
-    private final double weightNetto = 60;
+    private final double weightNetto = 35;
     private double weightBrutto = weightNetto;
     private final boolean electricity = false;
     private double capacity = 65;

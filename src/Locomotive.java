@@ -13,10 +13,6 @@ public class Locomotive {
         this.idLocomotive = "L" + (++forId);
     }
     //getters:
-    public String getName() {
-        return name;
-    }
-
     public String getIdLocomotive() {
         return idLocomotive;
     }

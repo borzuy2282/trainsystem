@@ -1,7 +1,7 @@
 package Cars;
 
 public class Restaurant extends Car {
-    private final double weightNetto = 40;
+    private final double weightNetto = 35;
     private double weightBrutto = weightNetto;
     private final boolean electricity = true;
     private int staff = 0;

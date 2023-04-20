@@ -1,7 +1,7 @@
 package Cars;
 
 public class HeavyFreight extends Car{
-    private final double weightNetto = 40;
+    private final double weightNetto = 45;
     private double weightBrutto = weightNetto;
     private double capacity = 90;
     private final boolean electricity = false;

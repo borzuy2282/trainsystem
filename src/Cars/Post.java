@@ -1,7 +1,7 @@
 package Cars;
 
 public class Post extends Car{
-    private final double weightNetto = 50;
+    private final double weightNetto = 25;
     private double weightBrutto = weightNetto;
     private final boolean electricity = true;
     private int crew = 0;

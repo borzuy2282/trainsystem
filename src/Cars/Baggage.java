@@ -1,7 +1,7 @@
 package Cars;
 
 public class Baggage extends Car {
-    private final double weightNetto = 55;
+    private final double weightNetto = 25;
     private double weightBrutto = weightNetto;
     private double availablePlace = 30;
     private final boolean electricity = false;

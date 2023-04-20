@@ -1,7 +1,7 @@
 package Cars;
 
 public class Liquid extends Car implements FreightInt{
-    private final double weightNetto = 25;
+    private final double weightNetto = 35;
     private double weightBrutto = weightNetto;
     private final boolean electricity = false;
     private double capacity = 30;

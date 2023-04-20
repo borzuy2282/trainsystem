@@ -76,16 +76,11 @@ public class Trainset extends Thread {
         this.currentRail = currentRail;
     }
 
-    public void setWeight(double weight) {
-        this.weight = weight;
-    }
-
-    public void setCars(ArrayList<Car> cars) {
-        this.cars = cars;
-    }
-
     public void setSpeed(double speed) {
         this.speed = speed;
+    }
+    public void setWeight(double v) {
+        weight = v;
     }
 
     public void setGlobalTo(Station globalTo) {
