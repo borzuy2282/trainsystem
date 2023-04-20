@@ -1,9 +1,9 @@
 package Cars;
 public class Passenger extends Car{
     private final double weightNetto = 75;
-    private double weightBrutto;
-    private final int places = 100;
-    private int people;
+    private double weightBrutto = weightNetto;
+    private int freePlaces = 100;
+    private int people = 0;
     private final  boolean electricity = true;
 
 
@@ -11,37 +11,34 @@ public class Passenger extends Car{
         super(n);
     }
     //getters
-    @Override
-    public double getWeightNetto() {
-        return weightNetto;
-    }
-
-    @Override
-    public double getWeightBrutto() {
-        return weightBrutto;
-    }
-
     public int getPlaces() {
-        return places;
+        return freePlaces;
     }
 
     public int getPeople() {
         return people;
     }
-
-    public boolean isElectricity() {
-        return electricity;
-    }
 //    funcs:
     public void fillTrain(int p) throws TooManyPeopleException {
-        if(places >= p){
-            people = p;
-            weightBrutto = weightNetto + people;
+        if(freePlaces >= p && p > 0){
+            people += p;
+            freePlaces -= p;
+            weightBrutto += people * 0.1;
         }else{
             throw new TooManyPeopleException("No way we can fit those people, try to re-sell them tickets.");
         }
     }
     public void fillTrain(double p){
         throw new IllegalArgumentException("How can you get half of a person?");
+    }
+    public void emptyTrain(){
+        freePlaces += people;
+        people = 0;
+        weightBrutto = weightNetto;
+    }
+
+    @Override
+    public String toString() {
+        return this.getName() + ", " + this.getCarId() + ", current weight: " + weightBrutto + " ";
     }
 }

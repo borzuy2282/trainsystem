@@ -2,39 +2,40 @@ package Cars;
 
 public class Baggage extends Car {
     private final double weightNetto = 55;
-    private double weightBrutto;
-    private final double availablePlace = 30;
+    private double weightBrutto = weightNetto;
+    private double availablePlace = 30;
     private final boolean electricity = false;
+    private double load = 0;
 
     public Baggage(String n) {
         super(n);
     }
-//    getters
+//    funcs
 
-    @Override
-    public double getWeightNetto() {
-        return weightNetto;
-    }
-
-    @Override
-    public double getWeightBrutto() {
-        return weightBrutto;
+    public double getLoad() {
+        return load;
     }
 
     public double getAvailablePlace() {
         return availablePlace;
     }
 
-    @Override
-    public boolean isElectricity() {
-        return electricity;
-    }
-//    funcs
     public void fillTrain(double s) throws TooManyPeopleException{
-        if(s > availablePlace){
+        if(s > availablePlace || s <= 0){
             throw new TooManyPeopleException("You are taking too much, this car can't fill it inside");
         }else{
-            weightBrutto = weightNetto + s;
+            load += s;
+            availablePlace -= s;
+            weightBrutto += s;
         }
+    }
+    public void emptyTrain(){
+        availablePlace += load;
+        load = 0;
+        weightBrutto = weightNetto;
+    }
+    @Override
+    public String toString() {
+        return this.getName() + ", " + this.getCarId() + ", current weight: " + weightBrutto + " ";
     }
 }

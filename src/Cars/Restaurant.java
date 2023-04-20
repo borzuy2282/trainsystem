@@ -4,56 +4,44 @@ public class Restaurant extends Car {
     private final double weightNetto = 40;
     private double weightBrutto = weightNetto;
     private final boolean electricity = true;
-    private int tables;
-    private int waiters;
-    private int cookers;
+    private int staff = 0;
+    private int place = 15;
 
     public Restaurant(String n) {
         super(n);
     }
 //    getters
 
-    @Override
-    public double getWeightNetto() {
-        return weightNetto;
+
+    public int getStaff() {
+        return staff;
     }
+
+    public int getPlace() {
+        return place;
+    }
+
+    //    funcs
 
     @Override
-    public double getWeightBrutto() {
-        return weightBrutto;
-    }
-
-    @Override
-    public boolean isElectricity() {
-        return electricity;
-    }
-
-    public int getTables() {
-        return tables;
-    }
-
-    public int getWaiters() {
-        return waiters;
-    }
-
-    public int getCookers() {
-        return cookers;
-    }
-//    funcs
-    public void addWaiters(int waiters) throws TooManyPeopleException{
-        if(waiters <= 15 && waiters >= 5){
-            this.waiters = waiters;
-            weightBrutto += waiters * 0.1;
+    public void fillTrain(int i) throws TooManyPeopleException {
+        if (i > place || i <= 0){
+            throw new TooManyPeopleException("Not right amount of staff");
         }else{
-            throw new TooManyPeopleException("Not an amount of waiters to serve people their food without any problems!");
+            staff += i;
+            place -= i;
+            weightBrutto += i * 0.1;
         }
     }
-    public void addCookers(int cookers) throws TooManyPeopleException{
-        if(cookers <= 5 && cookers >= 2){
-            this.cookers = cookers;
-            weightBrutto += cookers * 0.1;
-        }else{
-            throw new TooManyPeopleException("Bad amount of cookers, people won't get their food as tasty as they wanted and not as fast as they wanted.");
-        }
+
+    @Override
+    public void emptyTrain() {
+        place += staff;
+        staff = 0;
+        weightBrutto = weightNetto;
+    }
+    @Override
+    public String toString() {
+        return this.getName() + ", " + this.getCarId() + ", current weight: " + weightBrutto + " ";
     }
 }

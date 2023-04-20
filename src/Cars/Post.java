@@ -2,40 +2,40 @@ package Cars;
 
 public class Post extends Car{
     private final double weightNetto = 50;
-    private double weightBrutto;
+    private double weightBrutto = weightNetto;
     private final boolean electricity = true;
-    private int crew;
+    private int crew = 0;
+    private int place = 10;
 
     public Post(String n) {
         super(n);
     }
 //    getters
 
-    @Override
-    public double getWeightNetto() {
-        return weightNetto;
-    }
-
-    @Override
-    public double getWeightBrutto() {
-        return weightBrutto;
-    }
-
-    @Override
-    public boolean isElectricity() {
-        return electricity;
-    }
+    public int getPlace(){return place;}
 
     public int getCrew() {
         return crew;
     }
 //    funcs
     public void fillTrain(int n) throws TooManyPeopleException{
-        if(n <= 10 && n >= 3){
-            crew = n;
-            weightBrutto = weightNetto + (n * 0.1);
+        if(n <= place && n >= 1){
+            crew += n;
+            place -= n;
+            weightBrutto += (n * 0.1);
         }else{
-            throw new TooManyPeopleException("It's not the proper number of people to create a crew, so please, change the number of people here.");
+            throw new TooManyPeopleException("It's not the proper number of people to make a crew, try again.");
         }
+    }
+
+    @Override
+    public void emptyTrain() {
+        place += crew;
+        crew = 0;
+        weightBrutto = weightNetto;
+    }
+    @Override
+    public String toString() {
+        return this.getName() + ", " + this.getCarId() + ", current weight: " + weightBrutto + " ";
     }
 }

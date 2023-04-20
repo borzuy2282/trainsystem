@@ -19,58 +19,61 @@ public class Menu extends Thread {
     public void mainMenu(){
         Scanner sc = new Scanner(System.in);
         System.out.print("Hey, here is your menu, so you will be able to start the program:\n " +
-                "1 - create a station\n" +
-                "2 - create a locomotive\n" +
-                "3 - create a car\n" +
+                "1 - create a station,  " +
+                "2 - create a locomotive,  " +
+                "3 - create a car,  " +
                 "4 - create a trainset\n" +
-                "5 - add car to a trainset\n" +
-                "6 - add connections to the station\n" +
-                "7 - launch a trainset\n" +
-                "8 - fill the car" +
+                "5 - add car to a trainset,  " +
+                "6 - add connections to the station,  " +
+                "7 - launch a trainset,  " +
+                "8 - fill the car\n" +
                 "9 - see a list of all station and all stuff connected to it\n" +
                 "10 - see a list of all trainsets and all stuff connected to it\n" +
-                "11 - remove a trainset\n" +
-                "12 - remove a locomotive\n" +
-                "13 - remove a car\n" +
-                "14 - remove a station\n" +
-                "15 - quit the program\n" +
+                "11 - set a destination station for a trainset\n" +
+                "12 - remove a trainset,  " +
+                "13 - remove a locomotive,  " +
+                "14 - remove a car,  " +
+                "15 - remove a station\n" +
+                "16 - quit the program\n" +
                 "So, feel free to use: ");
-        int pick = sc.nextInt();
+        String pick = sc.next();
         System.out.println();
         switch(pick){
-            case 1 -> {
+            case "1" -> {
                 creatingStation();
-            } case 2 -> {
+            } case "2" -> {
                 creatingLocomotive();
-            } case 3 -> {
+            } case "3" -> {
                 creatingCar();
-            } case 4 -> {
+            } case "4" -> {
                 creatingTrainset();
-            } case 5 -> {
+            } case "5" -> {
                 addingCarToTrainset();
-            } case 6 -> {
+            } case "6" -> {
                 creatingConnections();
-            } case 7 ->{
+            } case "7" ->{
                 launching();
-            } case 8 -> {
+            } case "8" -> {
                 fillingCar();
-            } case 9 -> {
+            } case "9" -> {
                 infoStation();
-            } case 10 ->{
+            } case "10" ->{
                 infoTrainset();
-            } case 11 ->{
+            }case "11" -> {
+                settingDest();
+            }case "12" ->{
                 removeTrainset();
-            } case 12 ->{
+            } case "13" ->{
                 removeLocomotive();
-            }case 13 -> {
+            }case "14" -> {
                 removeCar();
-            }case 14 ->{
+            }case "15" ->{
                 removeStation();
-            }case 15 ->{
+            }case "16" ->{
                 for(Trainset t : threads){
                     t.stop();
                 }
-                setStopper(false);
+                setStopper();
             }
             default -> {
                 System.out.println("Something went wrong.");
@@ -87,10 +90,12 @@ public class Menu extends Thread {
         System.out.println();
         Station st = new Station(name);
         stations.add(st);
+        System.out.println("Station created! Id: " + st.getIdStation());
         System.out.print("Do you want to add connections to your stations[1 - yes/2 - no]? ");
         int answer = sc.nextInt();
         if(answer == 1){
             addingConnections();
+            return;
         }
         System.out.println("\nSo, we're done here");
     }
@@ -104,100 +109,84 @@ public class Menu extends Thread {
     }
     public void creatingCar(){
         Scanner sc = new Scanner(System.in);
-        System.out.print("Please, choose the type of your car: " +
-                "1 - Passenger" +
-                "2 - Restaurant" +
-                "3 - Post" +
-                "4 - Baggage" +
-                "5 - Freight" +
-                "6 - Heavy Freight" +
-                "7 - Liquid" +
-                "8 - Toxic" +
-                "9 - Explosives" +
-                "10 - Refrigerated" +
-                "11 - Gaseous" +
-                "12 - Liquid toxic" +
+        System.out.print("Please, choose the type of your car:\n" +
+                "1 - Passenger,  " +
+                "2 - Restaurant,  " +
+                "3 - Post\n" +
+                "4 - Baggage,  " +
+                "5 - Freight,  " +
+                "6 - Heavy Freight\n" +
+                "7 - Liquid,  " +
+                "8 - Toxic,  " +
+                "9 - Explosives\n" +
+                "10 - Refrigerated,  " +
+                "11 - Gaseous,  " +
+                "12 - Liquid toxic\n" +
                 "Please, choose: ");
-        int answer = sc.nextInt();
-        if(answer >= 1 && answer <= 12){
+            String answer = sc.next();
             System.out.print("\nPlease, choose a name of your car: ");
             String name = sc.next();
             switch (answer){
-                case 1 -> {
+                case "1" -> {
                     Passenger cr = new Passenger(name);
                     cars.add(cr);
-                    System.out.println("\n Your car was successfully created!");
-                    break;
-                }case 2 -> {
+                    System.out.println("\n Your car was successfully created! " + cr.getCarId());
+                }case "2" -> {
                     Restaurant cr = new Restaurant(name);
                     cars.add(cr);
-                    System.out.println("\n Your car was successfully created!");
-                    break;
-                }case 3 -> {
+                    System.out.println("\n Your car was successfully created! " + cr.getCarId());
+                }case "3" -> {
                     Post cr = new Post(name);
                     cars.add(cr);
-                    System.out.println("\n Your car was successfully created!");
-                    break;
-                }case 4 -> {
+                    System.out.println("\n Your car was successfully created! " + cr.getCarId());
+                }case "4" -> {
                     Baggage cr = new Baggage(name);
                     cars.add(cr);
-                    System.out.println("\n Your car was successfully created!");
-                    break;
-                }case 5 -> {
+                    System.out.println("\n Your car was successfully created! " + cr.getCarId());;
+                }case "5" -> {
                     Freight cr = new Freight(name);
                     cars.add(cr);
-                    System.out.println("\n Your car was successfully created!");
-                    break;
-                }case 6 -> {
+                    System.out.println("\n Your car was successfully created! " + cr.getCarId());
+                }case "6" -> {
                     HeavyFreight cr = new HeavyFreight(name);
                     cars.add(cr);
-                    System.out.println("\n Your car was successfully created!");
-                    break;
-                }case 7 -> {
+                    System.out.println("\n Your car was successfully created! " + cr.getCarId());
+                }case "7" -> {
                     Liquid cr = new Liquid(name);
                     cars.add(cr);
-                    System.out.println("\n Your car was successfully created!");
-                    break;
-                }case 8 -> {
+                    System.out.println("\n Your car was successfully created! " + cr.getCarId());
+                }case "8" -> {
                     Toxic cr = new Toxic(name);
                     cars.add(cr);
-                    System.out.println("\n Your car was successfully created!");
-                    break;
-                }case 9 -> {
+                    System.out.println("\n Your car was successfully created! " + cr.getCarId());
+                }case "9" -> {
                     Explosives cr = new Explosives(name);
                     cars.add(cr);
-                    System.out.println("\n Your car was successfully created!");
-                    break;
-                }case 10 -> {
+                    System.out.println("\n Your car was successfully created! " + cr.getCarId());
+                }case "10" -> {
                     Refrigerated cr = new Refrigerated(name);
                     cars.add(cr);
-                    System.out.println("\n Your car was successfully created!");
-                    break;
-                }case 11 -> {
+                    System.out.println("\n Your car was successfully created! " + cr.getCarId());
+                }case "11" -> {
                     Gaseous cr = new Gaseous(name);
                     cars.add(cr);
-                    System.out.println("\n Your car was successfully created!");
-                    break;
-                }case 12 -> {
+                    System.out.println("\n Your car was successfully created! " + cr.getCarId());
+                }case "12" -> {
                     ToxicLiquid cr = new ToxicLiquid(name);
                     cars.add(cr);
-                    System.out.println("\n Your car was successfully created!");
-                    break;
+                    System.out.println("\n Your car was successfully created! " + cr.getCarId());
                 }default -> {
-                    System.out.println("Something happend :/");
+                    System.out.println("\nDon't have this class yet, maybe you will try something else?");
+                    System.out.print("Do you want to try again?[1 - yes/2 - no]: ");
+                    int answ = sc.nextInt();
+                    if(answ == 1){
+                        creatingCar();
+                        return;
+                    }else{
+                        return;
+                    }
                 }
             }
-        }else{
-            System.out.println("\nDon't have this class yet, maybe you will try something else?");
-            System.out.print("Do you want to try again?[1 - yes/2 - no]: ");
-            int answ = sc.nextInt();
-            if(answ == 1){
-                creatingCar();
-            }else{
-                return;
-            }
-
-        }
     }
     public void creatingTrainset(){
         Scanner sc = new Scanner(System.in);
@@ -217,6 +206,7 @@ public class Menu extends Thread {
             int answ = sc.nextInt();
             if(answ == 1){
                 creatingTrainset();
+                return;
             }else{
                 return;
             }
@@ -237,6 +227,7 @@ public class Menu extends Thread {
                         int answ = sc.nextInt();
                         if(answ == 1){
                             creatingTrainset();
+                            return;
                         }else{
                             return;
                         }
@@ -251,6 +242,7 @@ public class Menu extends Thread {
             int answ = sc.nextInt();
             if(answ == 1){
                 creatingTrainset();
+                return;
             }else{
                 return;
             }
@@ -272,6 +264,7 @@ public class Menu extends Thread {
             int answ = sc.nextInt();
             if(answ == 1){
                 creatingTrainset();
+                return;
             }else{
                 return;
             }
@@ -282,13 +275,82 @@ public class Menu extends Thread {
             int answ = sc.nextInt();
             if(answ == 1){
                 creatingTrainset();
+                return;
             }
         }else{
             trainset.setGlobalTo(dest);
         }
 
-        System.out.println("\nTrainset is created! If you want to add few cars to it - do it through the menu.");
+        System.out.println("\nTrainset is created! Id: " + trainset.getIdTrainset() + " If you want to add few cars to it - do it through the menu.");
 
+    }
+    public void settingDest(){
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Tell me an ID of the trainset: ");
+        String trainsetID = "TS" + sc.next();
+        Trainset trainset = null;
+        for(Trainset t : trainsets){
+            if(t.getIdTrainset().equals(trainsetID)){
+                trainset = t;
+                break;
+            }
+        }
+        if(trainset == null){
+            System.out.println("\nDid not find trainset with that ID, please try again");
+            System.out.print("Do you want to try again?[1 - yes/2 - no]: ");
+            int answ = sc.nextInt();
+            if(answ == 1){
+                addingCarToTrainset();
+                return;
+            }else{
+                return;
+            }
+        }else{
+            if(trainset.isAlive()){
+                System.out.println("\nSorry, it is already on its way.");
+                System.out.print("Do you want to try again?[1 - yes/2 - no]: ");
+                int answ = sc.nextInt();
+                if(answ == 1){
+                    addingCarToTrainset();
+                    return;
+                }else{
+                    return;
+                }
+            }else{
+                System.out.print("Tell me ID of a station: ");
+                String stationID ="S" + sc.next();
+                Station station = null;
+                for(Station s : stations){
+                    if(s.getIdStation().equals(stationID)){
+                        station = s;
+                    }
+                }
+                if(station == null){
+                    System.out.println("\nWhoops, I didn't find this station, try again");
+                    System.out.print("Do you want to try again?[1 - yes/2 - no]: ");
+                    int answ = sc.nextInt();
+                    if(answ == 1){
+                        creatingTrainset();
+                        return;
+                    }else{
+                        return;
+                    }
+                } else if (station == trainset.getGlobalFrom()) {
+                    System.out.println("\nThis station is already a home station for this trainset.");
+                    System.out.print("Do you want to try again?[1 - yes/2 - no]: ");
+                    int answ = sc.nextInt();
+                    if(answ == 1){
+                        creatingTrainset();
+                        return;
+                    }else{
+                        return;
+                    }
+                }else{
+                    trainset.setGlobalTo(station);
+                    System.out.println("\nDestination station changed successfully!");
+                }
+            }
+        }
     }
     public void addingConnections(){
         Scanner sc = new Scanner(System.in);
@@ -306,6 +368,7 @@ public class Menu extends Thread {
             int answ = sc.nextInt();
             if(answ == 1){
                 addingConnections();
+                return;
             }else{
                 return;
             }
@@ -335,6 +398,7 @@ public class Menu extends Thread {
             int answ = sc.nextInt();
             if(answ == 1){
                 addingCarToTrainset();
+                return;
             }else{
                 return;
             }
@@ -346,6 +410,7 @@ public class Menu extends Thread {
         for(Car c : cars){
             if(c.getCarId().equals(carID)){
                 car = c;
+                break;
             }
         }
         if(car == null){
@@ -354,15 +419,55 @@ public class Menu extends Thread {
             int answ = sc.nextInt();
             if(answ == 1){
                 addingCarToTrainset();
+                return;
             }else{
                 return;
             }
-
         }
         try {
-            trainset.addCar(car);
+            if(trainset.getWeight() + car.getWeightBrutto() > 950){
+                System.out.println("\nToo heavy");
+                System.out.print("Do you want to try again?[1 - yes/2 - no]: ");
+                int answ = sc.nextInt();
+                if(answ == 1){
+                    addingCarToTrainset();
+                    return;
+                }else{
+                    return;
+                }
+            } else if (trainset.getElectricalCars() + 1 > 5) {
+                System.out.println("\nToo much electricity");
+                System.out.print("Do you want to try again?[1 - yes/2 - no]: ");
+                int answ = sc.nextInt();
+                if(answ == 1){
+                    addingCarToTrainset();
+                    return;
+                }else{
+                    return;
+                }
+            }else if(trainset.getCars().size() == 10){
+                System.out.println("Too much cars");
+                System.out.print("Do you want to try again?[1 - yes/2 - no]: ");
+                int answ = sc.nextInt();
+                if(answ == 1){
+                    addingCarToTrainset();
+                    return;
+                }else{
+                    return;
+                }
+            }else {
+                trainset.addCar(car);
+            }
         } catch (TooManyCarsException e) {
-            throw new RuntimeException(e);
+            System.out.println();
+            System.out.print("Do you want to try again?[1 - yes/2 - no]: ");
+            int answ = sc.nextInt();
+            if(answ == 1){
+                addingCarToTrainset();
+                return;
+            }else{
+                return;
+            }
         }
         System.out.println("\nCar added successfully!");
 
@@ -384,6 +489,7 @@ public class Menu extends Thread {
             int answ = sc.nextInt();
             if(answ == 1){
                 creatingTrainset();
+                return;
             }else{
                 return;
             }
@@ -397,6 +503,7 @@ public class Menu extends Thread {
             int answ = sc.nextInt();
             if(answ == 1){
                 creatingTrainset();
+                return;
             }else{
                 return;
             }
@@ -413,6 +520,7 @@ public class Menu extends Thread {
             int answ = sc.nextInt();
             if(answ == 1){
                 creatingTrainset();
+                return;
             }else{
                 return;
             }
@@ -434,6 +542,7 @@ public class Menu extends Thread {
             int answ = sc.nextInt();
             if(answ == 1){
                 creatingTrainset();
+                return;
             }else{
                 return;
             }
@@ -453,6 +562,7 @@ public class Menu extends Thread {
             }
             System.out.println("\nConnection created!");
         }
+        System.out.println("So, we're done here.");
     }
     public void removeTrainset(){
         Scanner sc = new Scanner(System.in);
@@ -462,7 +572,7 @@ public class Menu extends Thread {
         for(Trainset t : trainsets){
             if(t.getIdTrainset().equals(trainsetID)){
                 if(t.isAlive()){
-                    t.stop();
+                    t.stopper();
                 }
                 trainsets.remove(t);
                 flag = true;
@@ -475,6 +585,7 @@ public class Menu extends Thread {
             int answ = sc.nextInt();
             if(answ == 1){
                 removeTrainset();
+                return;
             }else{
                 return;
             }
@@ -482,6 +593,7 @@ public class Menu extends Thread {
         }else{
             System.out.println("\nTrainset was removed successfully.");
         }
+        System.out.println("So, we're done here.");
 
     }
     public void removeLocomotive(){
@@ -492,7 +604,6 @@ public class Menu extends Thread {
         for( Locomotive l : locomotives){
             if(l.getIdLocomotive().equals(locomotiveID)){
                 locomotive = l;
-
             }
         }
         if(locomotive == null){
@@ -501,6 +612,7 @@ public class Menu extends Thread {
             int answ = sc.nextInt();
             if(answ == 1){
                 removeLocomotive();
+                return;
             }else{
                 return;
             }
@@ -517,6 +629,11 @@ public class Menu extends Thread {
             System.out.print("\nThis locomotive is in the trainset, if you will delete it - trainset will also be removed. Give us a confirmation[1 - yes/2 - no]:");
             int answ = sc.nextInt();
             if(answ == 1){
+                for(Trainset t : threads){
+                    if(t == trainset){
+                        trainset.stopper();
+                    }
+                }
                 trainsets.remove(trainset);
                 locomotives.remove(locomotive);
             }else{
@@ -544,23 +661,33 @@ public class Menu extends Thread {
             int answ = sc.nextInt();
             if(answ == 1){
                 removeStation();
+                return;
             }else{
                 return;
             }
         }
         boolean flag = false;
         for(Trainset t : trainsets){
-            if(t.getRoute().get(0).equals(station) || t.getRoute().get(t.getRoute().size() - 1).equals(station)){
-                flag = true;
+            for(int i = 0; i < t.getRoute().size(); i++) {
+                if(t.getRoute() == null){
+                    break;
+                }
+                if (t.getRoute().get(i) == station) {
+                    flag = true;
+                    break;
+                }
+            }
+            if(flag){
                 break;
             }
         }
         if(flag){
-            System.out.println("\nSorry, we can't delete this station it is a key for a trainset's route.");
+            System.out.println("\nSorry, we can't delete this station it is a part of a trainset's route.");
             System.out.print("Do you want to try again?[1 - yes/2 - no]: ");
             int answ = sc.nextInt();
             if(answ == 1){
                 removeStation();
+                return;
             }else{
                 return;
             }
@@ -571,33 +698,52 @@ public class Menu extends Thread {
             }
             System.out.println("Station was deleted successfully!");
         }
+        System.out.println("So, we're done here.");
     }
     public void removeCar(){
         Scanner sc = new Scanner(System.in);
         System.out.print("Write an ID of a trainset: ");
         String trainsetID = "TS" + sc.next();
-        Trainset trainset;
+        Trainset trainset = null;
         for(Trainset t : trainsets){
-            if(t.getIdTrainset().equals(trainsetID)){
-                System.out.print("\nWrite an ID of a car: ");
-                String carID = "C" + sc.next();
-                for(Car c : t.getCars()){
-                    if(c.getCarId().equals(carID)){
-                        t.removeCar(c);
-                        trainset = t;
-                        int tmp = trainsets.indexOf(t);
-                        trainsets.remove(t);
-                        trainsets.add(tmp, trainset);
-                    }
-                }
+            if(trainsetID.equals(t.getIdTrainset())){
+                trainset = t;
             }
         }
-        System.out.println("\nSorry, there was some troubles.");
-        System.out.print("Do you want to try again?[1 - yes/2 - no]: ");
-        int answ = sc.nextInt();
-        if(answ == 1){
-            fillingCar();
+        if (trainset == null) {
+            System.out.println("\nI did not find that trainset, try again.");
+            System.out.print("Do you want to try again?[1 - yes/2 - no]: ");
+            int answ = sc.nextInt();
+            if(answ == 1){
+                removeCar();
+                return;
+            }else{
+                return;
+            }
+        }else{
+            System.out.print("\nWrite an ID of a car: ");
+            String carID = "C" + sc.next();
+            Car car = null;
+            for(Car c : trainset.getCars()) {
+                if(c.getCarId().equals(carID)){
+                    car = c;
+                }
+            }
+            if(car == null) {
+                System.out.println("\nThis trainset doesn't have this car.");
+                System.out.print("Do you want to try again?[1 - yes/2 - no]: ");
+                int answ = sc.nextInt();
+                if (answ == 1) {
+                    fillingCar();
+                    return;
+                } else {
+                    return;
+                }
+            }
+            trainset.setWeight(trainset.getWeight() - car.getWeightBrutto());
+            trainset.removeCar(car);
         }
+        System.out.println("\nWe're done here");
     }
     public void infoStation(){
         for(Station s : stations){
@@ -626,12 +772,19 @@ public class Menu extends Thread {
             int answ = sc.nextInt();
             if(answ == 1){
                 launching();
+                return;
+            }else{
+                return;
             }
         }else{
-
-            threads.add(trainset);
-            trainset.start();
+            if(!trainset.isAlive()) {
+                threads.add(trainset);
+                trainset.start();
+            }else{
+                System.out.println("It is already riding.");
+            }
         }
+        System.out.println("\nSo we're done here");
 
     }
     public void fillingCar(){
@@ -650,96 +803,335 @@ public class Menu extends Thread {
             int answ = sc.nextInt();
             if(answ == 1){
                 fillingCar();
+                return;
             }else{
                 return;
             }
         }
-        if(trainset.getCars() == null){
-            System.out.println("No cars to be filled");
+        if(trainset.getRoute() != null){
+            System.out.println("\nSorry, this train already started its trip. Please wait until it will come to destination station");
             System.out.print("Do you want to try again?[1 - yes/2 - no]: ");
             int answ = sc.nextInt();
             if(answ == 1){
                 fillingCar();
+                return;
+            }else{
+                return;
+            }
+        }
+        if(trainset.getCars() == null || trainset.getCars().size() == 0){
+            System.out.println("\nNo cars to be filled");
+            System.out.print("Do you want to try again?[1 - yes/2 - no]: ");
+            int answ = sc.nextInt();
+            if(answ == 1){
+                fillingCar();
+                return;
             }else{
                 return;
             }
         }
         for(Car c : trainset.getCars()){
             if(c instanceof Passenger) {
-                System.out.print("How many people do you want to load? ");
+                System.out.print("\nHow many people do you want to load? ");
                 int people = sc.nextInt();
-                if(people > 100){
-                    System.out.println("Too much people, we need to retry.");
+                if(people > ((Passenger) c).getPlaces() || people < 0){
+                    System.out.println("\nToo much people, we need to retry.");
                     System.out.print("Do you want to try again?[1 - yes/2 - no]: ");
                     int answ = sc.nextInt();
                     if(answ == 1){
                         fillingCar();
+                        return;
                     }else{
                         return;
                     }
+                }else if (people == 0) {
+                    System.out.println("\nNothing loaded");
                 }else{
                     try {
-                        c.fillTrain(people);
+                        ((Passenger)c).fillTrain(people);
+                        System.out.println("\nFilled successfully!");
                     } catch (TooManyPeopleException e) {
-                        throw new RuntimeException(e);
+                        System.out.println();
+                        System.out.print("Do you want to try again?[1 - yes/2 - no]: ");
+                        int answ = sc.nextInt();
+                        if(answ == 1){
+                            fillingCar();
+                            return;
+                        }else{
+                            return;
+                        }
                     }
                 }
             }else if(c instanceof Restaurant){
-                System.out.print("Let's first fill it with a cookers, pass the number of them: ");
-                int cookers = sc.nextInt();
-                if(cookers >= 5 || cookers <= 2){
-                    System.out.println("We don't need so much, let's do retry");
+                System.out.print("Tell me the number of staff in a restaurant: ");
+                int staff = sc.nextInt();
+                if(staff > ((Restaurant) c).getPlace() || staff < 0){
+                    System.out.println("\nWe don't need this amount, let's do retry");
                     System.out.print("Do you want to try again?[1 - yes/2 - no]: ");
                     int answ = sc.nextInt();
                     if(answ == 1){
                         fillingCar();
+                        return;
                     }else{
                         return;
                     }
-                }
-                System.out.print("\nNow let's set the number of waiters: ");
-                int waiters = sc.nextInt();
-                if(waiters <= 5 || waiters >= 15){
-                    System.out.println("We don't need so much, let's do retry");
-                    System.out.print("Do you want to try again?[1 - yes/2 - no]: ");
-                    int answ = sc.nextInt();
-                    if(answ == 1){
-                        fillingCar();
-                    }else{
-                        return;
+                }else if (staff == 0) {
+                    System.out.println("\nNo one loaded");
+                }else {
+                    try {
+                        ((Restaurant) c).fillTrain(staff);
+                        System.out.println("\nFilled successfully!");
+
+                    } catch (TooManyPeopleException e) {
+                        System.out.println(e.getMessage());
                     }
-                }
-                try {
-                    ((Restaurant) c).addCookers(cookers);
-                    ((Restaurant) c).addWaiters(waiters);
-                } catch (TooManyPeopleException e) {
-                    throw new RuntimeException(e);
                 }
             } else if (c instanceof Post) {
-                System.out.print("Write me, how many people do you want to put here");
+                System.out.print("Write me, how many people do you want to add to crew: ");
                 int crew = sc.nextInt();
-                if(crew <= 3 || crew >= 10){
-                    System.out.println("We don't need so much, let's do retry");
+                if(crew > ((Post) c).getPlace() || crew < 0){
+                    System.out.println("\nWe don't need so much, let's do retry");
                     System.out.print("Do you want to try again?[1 - yes/2 - no]: ");
                     int answ = sc.nextInt();
                     if(answ == 1){
                         fillingCar();
+                        return;
                     }else{
                         return;
                     }
+                }else if (crew == 0) {
+                    System.out.println("\nNo one loaded");
                 }else{
                     try {
-                        c.fillTrain(crew);
+                        ((Post) c).fillTrain(crew);
+                        System.out.println("\nFilled successfully!");
                     } catch (TooManyPeopleException e) {
-                        throw new RuntimeException(e);
+                        System.out.println(e.getMessage());
                     }
+                }
+            }else if(c instanceof Baggage){
+                System.out.print("Write me, how much do you want to load into baggage car: ");
+                double baggage = sc.nextDouble();
+                if(baggage > ((Baggage) c).getAvailablePlace() || baggage < 0){
+                    System.out.println("\nWe don't need so much, let's do retry");
+                    System.out.print("Do you want to try again?[1 - yes/2 - no]: ");
+                    int answ = sc.nextInt();
+                    if(answ == 1){
+                        fillingCar();
+                        return;
+                    }else{
+                        return;
+                    }
+                }else if (baggage == 0) {
+                    System.out.println("\nNothing loaded");
+                }else{
+                    try {
+                        ((Baggage)c).fillTrain(baggage);
+                        System.out.println("\nFilled successfully!");
+                    } catch (TooManyPeopleException e) {
+                        System.out.println("Something went wrong");
+                    }
+                }
+            }else if(c instanceof Freight){
+                System.out.print("Write me, how much do you want to load into freight car: ");
+                double baggage = sc.nextDouble();
+                if(baggage > ((Freight) c).getCapacity() || baggage < 0){
+                    System.out.println("\nWe don't need so much, let's do retry");
+                    System.out.print("Do you want to try again?[1 - yes/2 - no]: ");
+                    int answ = sc.nextInt();
+                    if(answ == 1){
+                        fillingCar();
+                        return;
+                    }else{
+                        return;
+                    }
+                }else if (baggage == 0) {
+                    System.out.println("\nNothing loaded");
+                }else {
+                    try {
+                        ((Freight)c).fillTrain(baggage);
+                        System.out.println("\nFilled successfully!");
+                    } catch (TooManyPeopleException e) {
+                        System.out.println("Something went wrong");
+                    }
+                }
+            } else if (c instanceof HeavyFreight) {
+                System.out.print("Write me, how much do you want to load into heavy freight car: ");
+                double baggage = sc.nextDouble();
+                if(baggage > ((HeavyFreight) c).getCapacity() || baggage < 0){
+                    System.out.println("\nWe don't need so much, let's do retry");
+                    System.out.print("Do you want to try again?[1 - yes/2 - no]: ");
+                    int answ = sc.nextInt();
+                    if(answ == 1){
+                        fillingCar();
+                        return;
+                    }else{
+                        return;
+                    }
+                }else if (baggage == 0) {
+                    System.out.println("\nNothing loaded");
+                }else {
+                    try {
+                        ((HeavyFreight)c).fillTrain(baggage);
+                        System.out.println("\nFilled successfully!");
+                    } catch (TooManyPeopleException e) {
+                        System.out.println("Something went wrong");
+                    }
+                }
+            } else if (c instanceof Refrigerated) {
+                System.out.print("Write me, how much do you want to load into refrigerated car: ");
+                double baggage = sc.nextDouble();
+                if(baggage > ((Refrigerated) c).getCapacity() || baggage < 0){
+                    System.out.println("\nWe don't need so much, let's do retry");
+                    System.out.print("Do you want to try again?[1 - yes/2 - no]: ");
+                    int answ = sc.nextInt();
+                    if(answ == 1){
+                        fillingCar();
+                        return;
+                    }else{
+                        return;
+                    }
+                }else if (baggage == 0) {
+                    System.out.println("\nNothing loaded");
+                }else {
+                    try {
+                        ((Refrigerated)c).fillTrain(baggage);
+                        System.out.println("\nFilled successfully!");
+                    } catch (TooManyPeopleException e) {
+                        System.out.println("Something went wrong");
+                    }
+                }
+            } else if (c instanceof Liquid) {
+                System.out.print("Write me, how much do you want to load into liquid car: ");
+                double baggage = sc.nextDouble();
+                if(baggage > ((Liquid) c).getCapacity() || baggage < 0){
+                    System.out.println("\nWe don't need so much, let's do retry");
+                    System.out.print("Do you want to try again?[1 - yes/2 - no]: ");
+                    int answ = sc.nextInt();
+                    if(answ == 1){
+                        fillingCar();
+                        return;
+                    }else{
+                        return;
+                    }
+                }else if (baggage == 0) {
+                    System.out.println("\nNothing loaded");
+                }else {
+                    try {
+                        ((Liquid)c).fillTrain(baggage);
+                        System.out.println("\nFilled successfully!");
+                    } catch (TooManyPeopleException e) {
+                        System.out.println("Something went wrong");
+                    }
+                }
+            } else if (c instanceof Gaseous) {
+                System.out.print("Write me, how much do you want to load into gaseous car: ");
+                double baggage = sc.nextDouble();
+                if(baggage > ((Gaseous) c).getCapacity() || baggage < 0){
+                    System.out.println("\nWe don't need so much, let's do retry");
+                    System.out.print("Do you want to try again?[1 - yes/2 - no]: ");
+                    int answ = sc.nextInt();
+                    if(answ == 1){
+                        fillingCar();
+                        return;
+                    }else{
+                        return;
+                    }
+                }else if (baggage == 0) {
+                    System.out.println("\nNothing loaded");
+                }else {
+                    try {
+                        ((Gaseous)c).fillTrain(baggage);
+                        System.out.println("\nFilled successfully!");
+                    } catch (TooManyPeopleException e) {
+                        System.out.println("Something went wrong");
+                    }
+                }
+            } else if (c instanceof Explosives) {
+                System.out.print("Write me, how much do you want to load into explosives car: ");
+                double baggage = sc.nextDouble();
+                if(baggage > ((Explosives) c).getCapacity() || baggage < 0){
+                    System.out.println("\nWe don't need so much, let's do retry");
+                    System.out.print("Do you want to try again?[1 - yes/2 - no]: ");
+                    int answ = sc.nextInt();
+                    if(answ == 1){
+                        fillingCar();
+                        return;
+                    }else{
+                        return;
+                    }
+                }else if (baggage == 0) {
+                    System.out.println("\nNothing loaded");
+                }else {
+                    try {
+                        ((Explosives)c).fillTrain(baggage);
+                        System.out.println("\nFilled successfully!");
+                    } catch (TooManyPeopleException e) {
+                        System.out.println("Something went wrong");
+                    }
+                }
+            } else if (c instanceof Toxic) {
+                System.out.print("Write me, how much do you want to load into toxic car: ");
+                double baggage = sc.nextDouble();
+                if(baggage > ((Toxic) c).getCapacity() || baggage < 0){
+                    System.out.println("\nWe don't need so much, let's do retry");
+                    System.out.print("Do you want to try again?[1 - yes/2 - no]: ");
+                    int answ = sc.nextInt();
+                    if(answ == 1){
+                        fillingCar();
+                        return;
+                    }else{
+                        return;
+                    }
+                }else if (baggage == 0) {
+                    System.out.println("\nNothing loaded");
+                } else {
+                    try {
+                        ((Toxic)c).fillTrain(baggage);
+                        System.out.println("\nFilled successfully!");
+                    } catch (TooManyPeopleException e) {
+                        System.out.println("Something went wrong");
+                    }
+                }
+            } else if (c instanceof ToxicLiquid) {
+                System.out.print("Write me, how much do you want to load into toxic liquid car: ");
+                double baggage = sc.nextDouble();
+                if(baggage > ((ToxicLiquid) c).getCapacity() || baggage < 0){
+                    System.out.println("\nWe don't need so much, let's do retry");
+                    System.out.print("Do you want to try again?[1 - yes/2 - no]: ");
+                    int answ = sc.nextInt();
+                    if(answ == 1){
+                        fillingCar();
+                        return;
+                    }else{
+                        return;
+                    }
+                } else if (baggage == 0) {
+                    System.out.println("\nNothing loaded");
+                } else {
+                    try {
+                        ((ToxicLiquid)c).fillTrain(baggage);
+                        System.out.println("\nFilled successfully!");
+                    } catch (TooManyPeopleException e) {
+                        System.out.println("Something went wrong");
+                    }
+                }
+            }else{
+                System.out.println("\nThere is a problem.");
+                System.out.print("Do you want to try again?[1 - yes/2 - no]: ");
+                int answ = sc.nextInt();
+                if(answ == 1){
+                    fillingCar();
+                    return;
+                }else{
+                    return;
                 }
             }
         }
     }
 
-    public void setStopper(boolean stopper) {
-        this.stopper = stopper;
+    public void setStopper() {
+        this.stopper = false;
     }
 
     public ArrayList<Trainset> getTrainsets() {

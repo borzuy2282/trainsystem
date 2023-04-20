@@ -3,42 +3,36 @@ package Cars;
 public class Freight extends Car{
     private final double weightNetto = 20;
     private double weightBrutto = weightNetto;
-    private final double capacity = 45;
+    private double capacity = 45;
     private final boolean electricity = false;
-    private double loaded;
+    private double loaded = 0;
     public Freight(String n) {
         super(n);
     }
-
-    @Override
-    public double getWeightNetto() {
-        return weightNetto;
-    }
-
-    @Override
-    public double getWeightBrutto() {
-        return weightBrutto;
-    }
-
     public double getCapacity() {
         return capacity;
-    }
-
-    @Override
-    public boolean isElectricity() {
-        return electricity;
     }
 
     public double getLoaded() {
         return loaded;
     }
-    public void fillTheTrain(double load) throws TooManyPeopleException{
-        if(capacity >= load){
-            this.loaded = load;
+    public void fillTrain(double load) throws TooManyPeopleException{
+        if(capacity >= load && load > 0){
+            loaded += load;
             weightBrutto += load;
+            capacity -= load;
         }
         else{
             throw new TooManyPeopleException("No space for such amount of load");
         }
+    }
+    public void emptyTrain(){
+        capacity += loaded;
+        loaded = 0;
+        weightBrutto = weightNetto;
+    }
+    @Override
+    public String toString() {
+        return this.getName() + ", " + this.getCarId() + ", current weight: " + weightBrutto + " ";
     }
 }

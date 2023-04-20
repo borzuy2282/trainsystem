@@ -5,7 +5,7 @@ abstract public class Car {
     public static int forId = 0;
     private final String carId;
     private double weightNetto;
-    private double weightBrutto;
+    private double weightBrutto = weightNetto;
     private boolean electricity;
     Car(String n){
         this.name = n;
@@ -31,19 +31,16 @@ abstract public class Car {
     public boolean isElectricity() {
         return electricity;
     }
-
+//funcs
     @Override
     public String toString() {
         return name + ", " + carId + ", current weight: " + weightBrutto;
     }
     public void fillTrain(int i) throws TooManyPeopleException{
-
     }
     public void fillTrain(double i) throws TooManyPeopleException{
-
     }
-    public void printInfo(){
-
+    public void emptyTrain(){
     }
 }
 

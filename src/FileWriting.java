@@ -1,6 +1,4 @@
 import Cars.Car;
-import com.sun.source.tree.ArrayAccessTree;
-
 import java.io.*;
 import java.util.ArrayList;
 
@@ -13,22 +11,16 @@ public class FileWriting extends Thread{
         this.trainsets = trainsets;
         this.menu = menu;
     }
-
-
-    public void setTrainsets(ArrayList<Trainset> trainsets) {
-        this.trainsets = trainsets;
-    }
-
-
     @Override
     public void run(){
             while(true) {
                 try(FileWriter bw = new FileWriter("AppState.txt", true)){
                     if(trainsets.isEmpty()){
                         bw.write("No trainsets at this moment.\n");
-                    }
-                    for(Trainset t : sort()){
-                        bw.write(t + "\n");
+                    }else {
+                        for (Trainset t : sort()) {
+                            bw.write(t + "\n");
+                        }
                     }
                     bw.write("\n");
                 }catch (IOException e){
@@ -48,10 +40,12 @@ public class FileWriting extends Thread{
         ArrayList<Trainset>sorted = trainsets;
         for (int j = 0; j < sorted.size() - 1; j++) {
             for (int i = j; i < sorted.size() - 1; i++) {
-                if (sorted.get(i).getLenLeft() > sorted.get(i + 1).getLenLeft()) {
-                    Trainset tmp = sorted.get(i);
-                    sorted.set(i, sorted.get(i + 1));
-                    sorted.set(i+1, tmp);
+                if(sorted.get(i).getRoute() != null && sorted.get(i + 1).getRoute() != null) {
+                    if (sorted.get(i).getLenLeft() > sorted.get(i + 1).getLenLeft()) {
+                        Trainset tmp = sorted.get(i);
+                        sorted.set(i, sorted.get(i + 1));
+                        sorted.set(i + 1, tmp);
+                    }
                 }
             }
         }
@@ -59,7 +53,7 @@ public class FileWriting extends Thread{
     }
     public static String printingCars(Trainset t){
         ArrayList <Car> cars = t.getCars();
-        if(cars == null){
+        if(cars == null || cars.size() == 0){
             return "No car";
         }
         for (int i = 0; i < cars.size() - 1; i++) {
@@ -69,38 +63,10 @@ public class FileWriting extends Thread{
                 cars.set(i+1, tmp);
             }
         }
-        StringBuilder returner = new StringBuilder();
+        String returner = "";
         for (Car car : cars) {
-            returner.append(car.getName()).append(" ").append(car.getWeightBrutto()).append(" ");
+            returner += car;
         }
-        return returner.toString();
+        return returner;
     }
-//    public static void update(ArrayList <Trainset> trainsets){
-//        ArrayList <Trainset> sorted = new ArrayList<>();
-//        for(Trainset t : trainsets){
-//            sorted.add(t);
-//        }
-//        for (int i = 0; i < sorted.size() - 1; i++) {
-//            if (sorted.get(i).getLenLeft() > sorted.get(i + 1).getLenLeft()) {
-//                Trainset tmp = sorted.get(i);
-//                sorted.set(i, sorted.get(i + 1));
-//                sorted.set(i + 1, tmp);
-//            }
-//        }
-//
-//
-//        try{
-//            BufferedWriter bw = new BufferedWriter(new FileWriter("AppState.txt"));
-//            for(Trainset t : sorted){
-//                bw.write(t.getIdTrainset() + ", length left: " + t.getLenLeft() + ". " + printingCars(t));
-//                bw.newLine();
-//            }
-//            bw.newLine();
-//            bw.newLine();
-//            bw.flush();
-//            bw.close();
-//        }catch (IOException e){
-//            e.printStackTrace();
-//        }
-//    }
 }

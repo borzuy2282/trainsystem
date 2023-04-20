@@ -1,4 +1,4 @@
-import Cars.Car;
+import Cars.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,7 +12,7 @@ public class Trainset extends Thread {
     private static int forWaiting = 0;
     private final String idTrainset;
     private Locomotive head;
-    private ArrayList<Car> cars;
+    private ArrayList<Car> cars = new ArrayList<>();
     private double weight;
     private int electricalCars;
     private double speed;
@@ -22,11 +22,8 @@ public class Trainset extends Thread {
     private Station globalTo;
     private Rail currentRail;
     private ArrayList<Station> route;
-    private ArrayList<Station> all;
-    private ArrayList<Station> left;
     private ArrayList<Station> passed;
-    private ArrayList<Station> past;
-    private ArrayList<Trainset> allTrainsets;
+    private int counter = 0;
     private double lenLeft;
     private boolean stopper = true;
 
@@ -36,10 +33,6 @@ public class Trainset extends Thread {
         idTrainset = "TS" + (++forId);
     }
     //getters
-//    public String getName() {
-//        return name;
-//    }
-
     public String getIdTrainset() {
         return idTrainset;
     }
@@ -64,45 +57,14 @@ public class Trainset extends Thread {
         return electricalCars;
     }
 
-    public double getSpeed() {
-        return speed;
-    }
-
     public Station getGlobalFrom() {
         return globalFrom;
-    }
-
-    public Station getFrom() {
-        return from;
-    }
-
-    public Station getTo() {
-        return to;
     }
 
     public ArrayList<Station> getRoute() {
         return route;
     }
 
-    public Station getGlobalTo() {
-        return globalTo;
-    }
-
-    public ArrayList<Station> getPast() {
-        return past;
-    }
-
-    public ArrayList<Station> getLeft() {
-        return left;
-    }
-
-    public ArrayList<Station> getAll() {
-        return all;
-    }
-
-    public ArrayList<Trainset> getAllTrainsets() {
-        return allTrainsets;
-    }
     //setters
 
     public void setHead(Locomotive head) {
@@ -122,36 +84,12 @@ public class Trainset extends Thread {
         this.cars = cars;
     }
 
-    public void setElectricalCars(int electricalCars) {
-        this.electricalCars = electricalCars;
-    }
-
-    public void setAllTrainsets(ArrayList<Trainset> allTrainsets) {
-        this.allTrainsets = allTrainsets;
-    }
-
     public void setSpeed(double speed) {
         this.speed = speed;
     }
 
     public void setGlobalTo(Station globalTo) {
         this.globalTo = globalTo;
-    }
-
-    public void setTo(Station to) {
-        this.to = to;
-    }
-
-    public void setAll(ArrayList<Station> all) {
-        this.all = all;
-    }
-
-    public void setPast(ArrayList<Station> past) {
-        this.past = past;
-    }
-
-    public void setFrom(Station from) {
-        this.from = from;
     }
 
     public void setStopper(boolean stopper) {
@@ -162,11 +100,12 @@ public class Trainset extends Thread {
         if(cars == null){
             cars = new ArrayList<Car>();
         }
-        if (cars.size() >= 10) {
+        int tmp = c.isElectricity() ? 1 : 0;
+        if (cars.size() + 1 > 10) {
             throw new TooManyCarsException("There are too many cars here, we gonna launch without this");
-        } else if (weight >= 1000) {
+        } else if (weight + c.getWeightBrutto() > 950) {
             throw new TooManyCarsException("We're too heavy, we can't go with this car");
-        } else if (electricalCars >= 4) {
+        } else if (electricalCars + tmp > 5) {
             throw new TooManyCarsException("We have no power to join this car");
         } else {
             cars.add(c);
@@ -177,29 +116,8 @@ public class Trainset extends Thread {
         }
     }
 
-    public void startRide() {
-
-        /*do{
-
-        }
-        if(past == null) {
-            from = globalFrom;
-            left = new ArrayList<Station>();
-            left.addAll(all);
-            for (int i = 0; i < left.size(); i++) {
-                if(left.get(i).equals(globalFrom)){
-                    left.remove(i);
-                    break;
-                }
-            }
-            ArrayList<Station> t = new ArrayList<>();
-            t.add(globalFrom);
-            past = t;
-        }*/
-    }
-
     public void pick() {
-        past = new ArrayList<>();
+        ArrayList<Station> past = new ArrayList<>();
         Map <Station, Station> parentMap = new HashMap<>();
         route = new ArrayList<>();
         parentMap.put(this.globalFrom, null);
@@ -207,7 +125,7 @@ public class Trainset extends Thread {
         st.push(this.globalFrom);
         while(!st.empty()){
             Station current = st.pop();
-            this.past.add(current);
+            past.add(current);
 
             if(current.equals(this.globalTo)){
                 while (current != null){
@@ -219,7 +137,7 @@ public class Trainset extends Thread {
             }
             for(Station s : current.getCons()){
                 boolean flag = true;
-                for(Station ps : this.past){
+                for(Station ps : past){
                     if(s.equals(ps)){
                         flag = false;
                     }
@@ -237,36 +155,158 @@ public class Trainset extends Thread {
         weight -= car.getWeightBrutto();
         cars.remove(car);
     }
-    public synchronized void waiting(){
+    public void stopper(){
+        setStopper(false);
+    }
+    public static void generationTrainsets(ArrayList<Trainset>trainsets, ArrayList<Locomotive> locomotives, ArrayList<Car>cars,ArrayList<Station>stations ,String[]names){
+        Random rn = new Random();
+        for (int i = 0; i < 25; i++) {
+            locomotives.add(new Locomotive(names[i]));
+        }
+        for (int i = 0; i < 25; i++){
+            int stationNum = rn.nextInt(stations.size());
+            trainsets.add(new Trainset(names[i+25], stations.get(stationNum)));
+            trainsets.get(i).setHead(locomotives.get(i));
+        }
+        for(Trainset t: trainsets){
+            int carNum = rn.nextInt(5, 11);
+            for (int i = 0; i < carNum; i++) {
+                int carType = rn.nextInt(1, 13);
+                if (t.electricalCars == 5) {
+                    while (carType == 1 || carType == 2 || carType == 3 || carType == 10) {
+                        carType = rn.nextInt();
+                    }
+                }
+            int nameCar = rn.nextInt(100);
+            switch (Integer.toString(carType)) {
+                case "1" -> {
+                    Passenger cr = new Passenger(names[nameCar]);
+                    cars.add(cr);
+                    try {
+                        t.addCar(cr);
+                        t.weight += cr.getWeightBrutto();
+                        t.electricalCars++;
+                    } catch (TooManyCarsException e) {
+                        System.out.println("whoops");
+                    }
+                }
+                case "2" -> {
+                    Restaurant cr = new Restaurant(names[nameCar]);
+                    cars.add(cr);
+                    try {
+                        t.addCar(cr);
+                        t.weight += cr.getWeightBrutto();
+                        t.electricalCars++;
+                    } catch (TooManyCarsException e) {
+                        System.out.println("whoops");
+                    }
+                }
+                case "3" -> {
+                    Post cr = new Post(names[nameCar]);
+                    cars.add(cr);
+                    try {
+                        t.addCar(cr);
+                        t.weight += cr.getWeightBrutto();
+                        t.electricalCars++;
+                    } catch (TooManyCarsException e) {
+                        System.out.println("whoops");
+                    }
+                }
+                case "4" -> {
+                    Baggage cr = new Baggage(names[nameCar]);
+                    cars.add(cr);
+                    try {
+                        t.addCar(cr);
+                        t.weight += cr.getWeightBrutto();
+                    } catch (TooManyCarsException e) {
+                        System.out.println("whoops");
+                    }
 
-        /*if(forWaiting <= 50) {
-            boolean flag = false;
-            for (int i = 0; i < allTrainsets.size(); i++) {
-                if (!this.getIdTrainset().equals(allTrainsets.get(i).idTrainset)) {
-                    if (this.getFrom() != null && allTrainsets.get(i).getFrom() != null) {
-                        if (allTrainsets.get(i).getFrom().equals(this.getFrom()) && allTrainsets.get(i).getTo().equals(this.getTo())) {
-                            flag = true;
-                        }
+                }
+                case "5" -> {
+                    Freight cr = new Freight(names[nameCar]);
+                    cars.add(cr);
+                    try {
+                        t.addCar(cr);
+                        t.weight += cr.getWeightBrutto();
+                    } catch (TooManyCarsException e) {
+                        System.out.println("whoops");
+                    }
+                }
+                case "6" -> {
+                    HeavyFreight cr = new HeavyFreight(names[nameCar]);
+                    cars.add(cr);
+                    try {
+                        t.addCar(cr);
+                        t.weight += cr.getWeightBrutto();
+                    } catch (TooManyCarsException e) {
+                        System.out.println("whoops");
+                    }
+                }
+                case "7" -> {
+                    Liquid cr = new Liquid(names[nameCar]);
+                    cars.add(cr);
+                    try {
+                        t.addCar(cr);
+                        t.weight += cr.getWeightBrutto();
+                    } catch (TooManyCarsException e) {
+                        System.out.println("whoops");
+                    }
+                }
+                case "8" -> {
+                    Toxic cr = new Toxic(names[nameCar]);
+                    cars.add(cr);
+                    try {
+                        t.addCar(cr);
+                        t.weight += cr.getWeightBrutto();
+                    } catch (TooManyCarsException e) {
+                        System.out.println("whoops");
+                    }
+                }
+                case "9" -> {
+                    Explosives cr = new Explosives(names[nameCar]);
+                    cars.add(cr);
+                    try {
+                        t.addCar(cr);
+                        t.weight += cr.getWeightBrutto();
+                    } catch (TooManyCarsException e) {
+                        System.out.println("whoops");
+                    }
+                }
+                case "10" -> {
+                    Refrigerated cr = new Refrigerated(names[nameCar]);
+                    cars.add(cr);
+                    try {
+                        t.addCar(cr);
+                        t.weight += cr.getWeightBrutto();
+                        t.electricalCars++;
+                    } catch (TooManyCarsException e) {
+                        System.out.println("whoops");
+                    }
+                }
+                case "11" -> {
+                    Gaseous cr = new Gaseous(names[nameCar]);
+                    cars.add(cr);
+                    try {
+                        t.addCar(cr);
+                        t.weight += cr.getWeightBrutto();
+                    } catch (TooManyCarsException e) {
+                        System.out.println("whoops");
+                    }
+                }
+                case "12" -> {
+                    ToxicLiquid cr = new ToxicLiquid(names[nameCar]);
+                    cars.add(cr);
+                    try {
+                        t.addCar(cr);
+                        t.weight += cr.getWeightBrutto();
+                    } catch (TooManyCarsException e) {
+                        System.out.println("whoops");
                     }
                 }
             }
-            if (flag) {
-                System.out.println("I'm waiting " + this.getIdTrainset());
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException("Smth went wrong");
-                }
-                forWaiting++;
-                waiting();
-
             }
-        }else{
-            forWaiting = 0;
-        }*/
-    }
-    public void stopper(){
-        setStopper(false);
+        }
     }
     @Override
     public void run(){
@@ -279,16 +319,12 @@ public class Trainset extends Thread {
             this.pick();
         }
         this.setSpeed(50);
-        System.out.println("Route is: ");
-        for(Station s : this.route){
-            System.out.print(s.getName() + " ");
-        }
-        System.out.println(this.getIdTrainset());
+        System.out.println("\n" + this.getIdTrainset() + " started its ride.");
         passed = new ArrayList<>();
         for(int i = 0; i < route.size() - 1; i++){
             from = route.get(i);
             to = route.get(i + 1);
-            Rail tmp = route.get(i).getConnection().get(i);
+            Rail tmp = from.getRail(to);
             while(tmp.getCurrentTrain() != null){
                 try{
                     Thread.sleep(100);
@@ -299,9 +335,8 @@ public class Trainset extends Thread {
             tmp.setCurrentTrain(this);
             this.setCurrentRail(tmp);
             lenLeft = tmp.getLength();
-            try{
+
                 while(lenLeft > 0) {
-                    System.out.println(route.get(i).getName() + " -> " + route.get(i + 1).getName() + " " + lenLeft + " " + this.getIdTrainset());
                     if(lenLeft - this.speed >= 0){
                         lenLeft -= this.speed;
                     }else{
@@ -338,100 +373,33 @@ public class Trainset extends Thread {
                         }
                     }
                 }
-            }catch (RuntimeException e){
-                System.out.println(e.getMessage());
-            }
             passed.add(route.get(i));
+            counter++;
             tmp.setCurrentTrain(null);
             this.setCurrentRail(null);
-            System.out.println("We came on a station: " + route.get(i + 1).getName() + " " + this.getIdTrainset());
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
-        System.out.println("We're on a destination station " + this.getIdTrainset());
+        System.out.println("\n" + idTrainset + " finished its ride.");
         route = null;
         Station tmp = this.globalFrom;
         globalFrom = globalTo;
         globalTo = tmp;
+        for(Car c : cars){
+            c.emptyTrain();
+        }
+        System.out.println("\nAll cars in trainset " + idTrainset + " are empty now, you can refill them with the menu.");
         try {
-            Thread.sleep(3000);
+            Thread.sleep(30000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
         if(stopper){
             this.run();
         }
-        /*
-//
-//        Random rand = new Random();
-//        currentRail = from.getConnection().get(rand.nextInt(0, from.getConnection().size()));
-//        this.waiting();
-
-        this.setSpeed(100);
-        while (currentRail.getLenLeft() > 0) {
-//            System.out.println(tmp.getLenLeft() + " " + this.getIdTrainset());
-            System.out.println(currentRail.getStation1().getName() + " -> " + currentRail.getStation2().getName() + " " + this.getIdTrainset());
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            int temp = (int) (Math.random() * 100);
-            if (temp > 50) {
-                if (this.getSpeed() + this.getSpeed() * 0.03 < 200) {
-                    this.setSpeed(this.getSpeed() + this.getSpeed() * 0.03);
-                } else {
-                    try {
-                        throw new RailroadHazardException("Too much, we won't speed up");
-                    } catch (RailroadHazardException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            } else {
-                if (this.getSpeed() - this.getSpeed() * 0.03 > 0) {
-                    this.setSpeed(this.getSpeed() - this.getSpeed() * 0.03);
-                } else {
-                    try {
-                        throw new RailroadHazardException("We can't stop, we will go on current speed");
-                    } catch (RailroadHazardException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }
-
-            currentRail.setLenLeft(currentRail.getLenLeft() - this.getSpeed());
-        }
-        System.out.println("We're here! " + this.getIdTrainset());
-        if(getTo().equals(getGlobalTo())){
-            System.out.println("We finished our trip " + globalTo.getName());
-            Station temp = globalFrom;
-            globalFrom = globalTo;
-            globalTo = temp;
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            this.past = null;
-            this.left = getAll();
-            System.out.println("We're starting our trip again!");
-            this.route = null;
-            this.run();
-        }else{
-            System.out.println(getTo().getName());
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            past.add(getTo());
-            left.remove(getTo());
-            this.setFrom(this.getTo());
-            this.run();
-        }*/
     }
 
     @Override
@@ -444,9 +412,8 @@ public class Trainset extends Thread {
         double routeLen = 0;
         double curRouteLen = 0;
         double routeLenPas = 0;
-
-        String routes = "";
-        if(this.route == null){
+        double curLenPas = 0;
+        if(this.route == null || this.route.size() == 0 || this.currentRail == null){
             return this.name + ", " + this.getIdTrainset() + ": head:" + getHead().getIdLocomotive() + ", cars: " + car + ", didn't start its ride yet.";
         }else {
             source = globalFrom.getIdStation();
@@ -457,12 +424,19 @@ public class Trainset extends Thread {
                 routeLen += route.get(i).getRail(route.get(i+1)).getLength();
             }
             curRouteLen = this.from.getRail(this.to).getLength();
-            for(int i = 0; i < passed.size() - 1; i++){
-                routeLenPas += passed.get(i).getRail(passed.get(i+1)).getLength();
+            for(int i = 0; i < counter; i++){
+                routeLenPas += route.get(i).getRail(route.get(i+1)).getLength();
             }
-            routeLenPas += lenLeft;
+            routeLenPas += currentRail.getLength() - lenLeft;
+            curLenPas = curRouteLen - lenLeft;
+            if(curRouteLen < 0){
+                curRouteLen = 0;
+            }
+            if(curLenPas <0){
+                curLenPas = 0;
+            }
         }
-        return this.name + ", " + this.getIdTrainset() + ": head:" + getHead().getIdLocomotive() + ", cars: " + car + ", home st.: " + source + ". Destination: "+ dest + ". Passed already: " + (routeLenPas / routeLen * 100) + "%. Current from station: " + from + ", current destination: " + to + ". Passed already: " + ((1 - lenLeft/curRouteLen) * 100) + "%.";
+        return this.name + ", " + this.getIdTrainset() + ": head:" + getHead().getIdLocomotive() + ", cars: " + car + ", home st.: " + source + ". Destination: "+ dest + ". Passed already: " + (routeLenPas / routeLen) * 100 + "%. Current from station: " + from + ", current destination: " + to + ". Passed already: " + (curLenPas / curRouteLen) * 100 + "%.";
     }
 }
 
