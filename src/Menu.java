@@ -92,8 +92,8 @@ public class Menu extends Thread {
         stations.add(st);
         System.out.println("Station created! Id: " + st.getIdStation());
         System.out.print("Do you want to add connections to your stations[1 - yes/2 - no]? ");
-        int answer = sc.nextInt();
-        if(answer == 1){
+        String answer = sc.next();
+        if(answer.equals("1")){
             addingConnections();
             return;
         }
@@ -300,7 +300,7 @@ public class Menu extends Thread {
             System.out.print("Do you want to try again?[1 - yes/2 - no]: ");
             int answ = sc.nextInt();
             if(answ == 1){
-                addingCarToTrainset();
+                settingDest();
                 return;
             }else{
                 return;
@@ -311,7 +311,7 @@ public class Menu extends Thread {
                 System.out.print("Do you want to try again?[1 - yes/2 - no]: ");
                 int answ = sc.nextInt();
                 if(answ == 1){
-                    addingCarToTrainset();
+                    settingDest();
                     return;
                 }else{
                     return;
@@ -330,7 +330,7 @@ public class Menu extends Thread {
                     System.out.print("Do you want to try again?[1 - yes/2 - no]: ");
                     int answ = sc.nextInt();
                     if(answ == 1){
-                        creatingTrainset();
+                        settingDest();
                         return;
                     }else{
                         return;
@@ -340,7 +340,7 @@ public class Menu extends Thread {
                     System.out.print("Do you want to try again?[1 - yes/2 - no]: ");
                     int answ = sc.nextInt();
                     if(answ == 1){
-                        creatingTrainset();
+                        settingDest();
                         return;
                     }else{
                         return;
@@ -488,7 +488,7 @@ public class Menu extends Thread {
             System.out.print("Do you want to try again?[1 - yes/2 - no]: ");
             int answ = sc.nextInt();
             if(answ == 1){
-                creatingTrainset();
+                creatingConnections();
                 return;
             }else{
                 return;
@@ -502,7 +502,7 @@ public class Menu extends Thread {
             System.out.print("Do you want to try again?[1 - yes/2 - no]: ");
             int answ = sc.nextInt();
             if(answ == 1){
-                creatingTrainset();
+                creatingConnections();
                 return;
             }else{
                 return;
@@ -519,7 +519,7 @@ public class Menu extends Thread {
             System.out.print("Do you want to try again?[1 - yes/2 - no]: ");
             int answ = sc.nextInt();
             if(answ == 1){
-                creatingTrainset();
+                creatingConnections();
                 return;
             }else{
                 return;
@@ -541,25 +541,13 @@ public class Menu extends Thread {
             System.out.print("Do you want to try again?[1 - yes/2 - no]: ");
             int answ = sc.nextInt();
             if(answ == 1){
-                creatingTrainset();
+                creatingConnections();
                 return;
             }else{
                 return;
             }
         }else{
             station1.addCons(station2);
-            for(Station s : stations){
-                if(s == station1){
-                    int ind = stations.indexOf(s);
-                    stations.remove(s);
-                    stations.add(ind, station1);
-                }
-                if(s == station2){
-                    int ind = stations.indexOf(s);
-                    stations.remove(s);
-                    stations.add(ind, station2);
-                }
-            }
             System.out.println("\nConnection created!");
         }
         System.out.println("So, we're done here.");
@@ -668,13 +656,12 @@ public class Menu extends Thread {
         }
         boolean flag = false;
         for(Trainset t : trainsets){
-            for(int i = 0; i < t.getRoute().size(); i++) {
-                if(t.getRoute() == null){
-                    break;
-                }
-                if (t.getRoute().get(i) == station) {
-                    flag = true;
-                    break;
+            if(t.getRoute()!= null) {
+                for (int i = 0; i < t.getRoute().size(); i++) {
+                    if (t.getRoute().get(i) == station) {
+                        flag = true;
+                        break;
+                    }
                 }
             }
             if(flag){
@@ -692,10 +679,7 @@ public class Menu extends Thread {
                 return;
             }
         }else{
-            ArrayList <Station> connections = station.getCons();
-            for(Station s : connections){
-                s.removeCons(station);
-            }
+            stations.remove(station);
             System.out.println("Station was deleted successfully!");
         }
         System.out.println("So, we're done here.");
@@ -734,7 +718,7 @@ public class Menu extends Thread {
                 System.out.print("Do you want to try again?[1 - yes/2 - no]: ");
                 int answ = sc.nextInt();
                 if (answ == 1) {
-                    fillingCar();
+                    removeCar();
                     return;
                 } else {
                     return;
@@ -776,7 +760,17 @@ public class Menu extends Thread {
             }else{
                 return;
             }
-        }else{
+        }else if(trainset.getGlobalTo() == null){
+            System.out.println("\nPlease, first set a global destination");
+            System.out.print("Do you want to try again?[1 - yes/2 - no]: ");
+            int answ = sc.nextInt();
+            if(answ == 1){
+                launching();
+                return;
+            }else{
+                return;
+            }
+        } else{
             if(!trainset.isAlive()) {
                 threads.add(trainset);
                 trainset.start();

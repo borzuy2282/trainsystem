@@ -19,7 +19,7 @@ public class Trainset extends Thread {
     private Station globalFrom;
     private Station from;
     private Station to;
-    private Station globalTo;
+    private Station globalTo = null;
     private Rail currentRail;
     private ArrayList<Station> route;
     private ArrayList<Station> passed;
@@ -43,6 +43,10 @@ public class Trainset extends Thread {
 
     public Locomotive getHead() {
         return head;
+    }
+
+    public Station getGlobalTo() {
+        return globalTo;
     }
 
     public ArrayList<Car> getCars() {
@@ -419,8 +423,10 @@ public class Trainset extends Thread {
                 routeLen += route.get(i).getRail(route.get(i+1)).getLength();
             }
             curRouteLen = this.from.getRail(this.to).getLength();
-            for(int i = 0; i < counter; i++){
-                routeLenPas += route.get(i).getRail(route.get(i+1)).getLength();
+            if(route.size() > 2) {
+                for (int i = 0; i < counter; i++) {
+                    routeLenPas += route.get(i).getRail(route.get(i + 1)).getLength();
+                }
             }
             routeLenPas += currentRail.getLength() - lenLeft;
             curLenPas = curRouteLen - lenLeft;

@@ -44,13 +44,6 @@ public class Station {
         connection.add(rail);
     }
     public void removeCons(Station s2){
-        for(Rail i : this.connection){
-            if(i.getStation1_1().equals(s2) || i.getStation1_2().equals(s2)){
-                s2.connection.remove(i);
-                connection.remove(i);
-                break;
-            }
-        }
         this.cons.remove(s2);
         s2.cons.remove(this);
     }
